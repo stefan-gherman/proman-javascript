@@ -1,6 +1,11 @@
+DROP table if exists cards;
+DROP table if exists boards;
+DROP table if exists statuses;
+drop table if exists users;
 CREATE TABLE boards (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(100)
+    title VARCHAR(100),
+    owner varchar(100) DEfault 'public'
 );
 
 
@@ -9,7 +14,7 @@ CREATE TABLE statuses (
     title VARCHAR(100)
 );
 
-DROP table if exists cards;
+
 CREATE TABLE cards (
     id serial primary key ,
     board_id integer references boards(id) ON DELETE CASCADE,
@@ -41,3 +46,11 @@ INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'in progr
 INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'planning', 2 + 1, 0);
 INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'done card 1', 3 + 1, 0);
 INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'done car 1', 3 + 1, 1);
+
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username varchar(100) UNIQUE,
+    password varchar(100),
+    register_time timestamp DEFAULT now()
+);
