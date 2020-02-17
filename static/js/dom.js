@@ -1,5 +1,5 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
+import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
@@ -7,7 +7,7 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
@@ -17,10 +17,48 @@ export let dom = {
 
         let boardList = '';
 
-        for(let board of boards){
+        for (let board of boards) {
             boardList += `
-                <li>${board.title}</li>
-            `;
+               <div>
+                    <p>
+                        <div class="navbar navbar-light bg-light rounded">
+                            <div class="d-flex flex-row">
+                              <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                ${board.title}
+                              </a>
+                              <button type="button" class="btn btn-light rounded border-secondary">+ New Card</button>
+
+                            </div>
+                            <button class="btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
+                                v
+                            </button>
+                        </div>
+                    </p>
+                    <div class="collapse" id="collapseExample${board.id}">
+                      <div class="card card-body">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>New</th>
+                              <th>In Progress</th>
+                              <th>Testing</th>
+                              <th>Done</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+`;
         }
 
         const outerHtml = `
