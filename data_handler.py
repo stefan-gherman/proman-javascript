@@ -1,4 +1,5 @@
 import persistence
+from psycopg2 import sql
 
 
 def get_card_status(status_id):
@@ -11,12 +12,22 @@ def get_card_status(status_id):
     return next((status['title'] for status in statuses if status['id'] == str(status_id)), 'Unknown')
 
 
-def get_boards():
+@persistence.connection_handler
+def get_boards(cursor):
     """
     Gather all boards
     :return:
     """
-    return persistence.get_boards(force=True)
+    # return persistence.get_boards(force=True)
+    cursor.execute(
+        sql.SQL('SELECT * FROM {boards};')
+            .format(
+            boards=sql.Identifier('boards')
+        )
+    )
+
+    result = cursor.fetchall()
+    return result
 
 
 def get_cards_for_board(board_id):
