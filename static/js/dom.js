@@ -32,7 +32,7 @@ export let dom = {
                               <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 ${board.title}
                               </a>
-                              <button type="button" class="btn btn-light rounded border-secondary" >+ New Card</button>
+                              <button type="button" class="btn btn-light rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
 
                             </div>
                             <button id ="board_${board.id}" class="btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
@@ -77,9 +77,13 @@ export let dom = {
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
 
         const boardExpandButton = document.getElementsByTagName('button');
-        console.log(boardExpandButton);
+        console.log('all buttons: ', boardExpandButton);
 
         for (let button of boardExpandButton) {
+            if (button.id.slice(0, 21) === 'buttonNewCardForBoard') {
+                button.addEventListener('click', handleNewCardClick);
+            }
+            else {
             button.addEventListener('click', async function (event) {
                 let idForBoard = button.id.slice(6);
                 let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
@@ -105,6 +109,7 @@ export let dom = {
 
                 console.log(`Board event ${this.id} expanded`);
             });
+            }
         }
 
     },
@@ -143,4 +148,18 @@ function createAppendCard(element) {
     card.innerText += `${element.title}`;
     columnBody.appendChild(card);
 
+}
+
+function handleNewCardClick(event) {
+    let board_id = event.target.id.slice(21);
+    let card_title = 'New Card';
+    let data = { board_id, card_title};
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    fetch('http://localhost:5000/api/create-card', options);
 }

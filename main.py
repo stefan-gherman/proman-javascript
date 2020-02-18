@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 from util import json_response
 
 import data_handler
@@ -43,6 +43,15 @@ def get_statuses_for_board(board_id):
 @json_response
 def get_cards_for_status(status_id):
     return data_handler.get_cards_for_status(status_id)
+
+
+@app.route('/api/create-card', methods=['POST'])
+def create_card():
+    board_id = request.json['board_id']
+    card_title = request.json['card_title']
+    status_id = data_handler.get_first_status_id_for_board(board_id)
+    data_handler.create_card(card_title, board_id, status_id)
+
 
 def main():
     app.run(debug=True)

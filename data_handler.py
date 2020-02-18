@@ -30,7 +30,6 @@ def get_boards(cursor):
     return result
 
 
-
 def get_cards_for_board(board_id):
     persistence.clear_cache()
     all_cards = persistence.get_cards()
@@ -65,3 +64,21 @@ def get_cards_for_status(cursor, status_id):
     result = cursor.fetchall()
     print(result)
     return result
+
+
+@persistence.connection_handler
+def get_first_status_id_for_board(cursor, board_id):
+    cursor.execute(f"""
+        SELECT id FROM statuses WHERE board_id = {board_id}
+        ORDER BY id ASC;
+""")
+    result = cursor.fetchone()
+    return result['id']
+
+
+@persistence.connection_handler
+def create_card(cursor, card_title, board_id, status_id):
+    cursor.execute(f"""
+        INSERT INTO cards (title, board_id, status_id)
+        VALUES ('{card_title}', {board_id}, {status_id});
+""")
