@@ -10,6 +10,13 @@ export let dom = {
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
+
+        // const boardExpandButton = document.getElementById('')\
+
+        const boardExpandButton = document.querySelectorAll(`.btn`);
+         boardExpandButton.addEventListener('click', function (event) {
+                console.log( `Board event ${this.id} expanded` );
+         });
     },
     showBoards: function (boards) {
         // shows boards appending them to #boards div
@@ -26,10 +33,10 @@ export let dom = {
                               <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 ${board.title}
                               </a>
-                              <button type="button" class="btn btn-light rounded border-secondary">+ New Card</button>
+                              <button type="button" class="btn btn-light rounded border-secondary" >+ New Card</button>
 
                             </div>
-                            <button class="btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
+                            <button id ="board_${board.id}" class="btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
                                 v
                             </button>
                         </div>
@@ -59,6 +66,7 @@ export let dom = {
                     </div>
                 </div>
 `;
+
         }
 
         const outerHtml = `
