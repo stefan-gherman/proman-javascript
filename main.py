@@ -20,19 +20,29 @@ def get_boards():
     """
     All the boards
     """
-    print(data_handler.get_boards())
     return data_handler.get_boards()
 
 
-@app.route("/get-cards/<int:board_id>")
-@json_response
-def get_cards_for_board(board_id: int):
-    """
-    All cards that belongs to a board
-    :param board_id: id of the parent board
-    """
-    return data_handler.get_cards_for_board(board_id)
+# @app.route("/get-cards/<int:board_id>")
+# @json_response
+# def get_cards_for_board(board_id: int):
+#     """
+#     All cards that belongs to a board
+#     :param board_id: id of the parent board
+#     """
+#     return data_handler.get_cards_for_board(board_id)
+#
 
+@app.route("/get-statuses/<board_id>")
+@json_response
+def get_statuses_for_board(board_id):
+    return data_handler.get_statuses_for_board(board_id)
+
+
+@app.route("/get-cards/<status_id>")
+@json_response
+def get_cards_for_status(status_id):
+    return data_handler.get_cards_for_status(status_id)
 
 def main():
     app.run(debug=True)

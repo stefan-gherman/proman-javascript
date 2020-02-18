@@ -30,6 +30,7 @@ def get_boards(cursor):
     return result
 
 
+
 def get_cards_for_board(board_id):
     persistence.clear_cache()
     all_cards = persistence.get_cards()
@@ -39,3 +40,28 @@ def get_cards_for_board(board_id):
             card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
     return matching_cards
+
+
+@persistence.connection_handler
+def get_statuses_for_board(cursor, board_id):
+    cursor.execute(
+        sql.SQL('SELECT statuses.* from statuses WHERE statuses.board_id = %s;')
+            .format(
+        ), [board_id]
+    )
+
+    result = cursor.fetchall()
+    return result
+
+
+@persistence.connection_handler
+def get_cards_for_status(cursor, status_id):
+    cursor.execute(
+        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = %s;')
+            .format(
+        ), [status_id]
+    )
+
+    result = cursor.fetchall()
+    print(result)
+    return result
