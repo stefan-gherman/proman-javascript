@@ -1,16 +1,24 @@
-from flask import Flask, render_template, url_for
-from util import json_response
+from flask import Flask, render_template, url_for, request
+from util import json_response, hash_password, verify_password
 
 import data_handler
 
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route('/')
 def index():
     """
     This is a one-pager which shows all the boards and cards
     """
+    return render_template('index.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = hash_password(request.form['password'])
     return render_template('index.html')
 
 
@@ -43,6 +51,7 @@ def get_statuses_for_board(board_id):
 @json_response
 def get_cards_for_status(status_id):
     return data_handler.get_cards_for_status(status_id)
+
 
 def main():
     app.run(debug=True)
