@@ -1,7 +1,8 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, jsonify
 from util import json_response, hash_password, verify_password
 
 import data_handler
+import util
 
 app = Flask(__name__)
 
@@ -14,12 +15,18 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/register', methods=['POST'])
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
+    try:
+        username = util.username_validation(request.form['username'])
         password = hash_password(request.form['password'])
-    return render_template('index.html')
+        if username and password:
+            data_handler.save_credentials(username, password)
+            return jsonify({'success': 'Account created, try to login.'})
+        else:
+            return jsonify({'error': 'Missing Data'})
+    except:
+        return jsonify({'error': 'Username already exists, try again.'})
 
 
 @app.route("/get-boards")
