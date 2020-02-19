@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ProMan</title>
-
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32"
           href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
@@ -21,7 +20,7 @@
 </head>
 <body>
 
-
+{% if not logged_in %}
 <!-- Modal Button Register-->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
     Register
@@ -32,71 +31,17 @@
     Login
 </button>
 
-<!-- Modal Register-->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Register</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="register">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username"
-                               placeholder="Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <div id="errorAlert" class="alert alert-danger" role="alert" style="display: none"></div>
-                    <div id="successAlert" class="alert alert-success" role="alert" style="display: none"></div>
-                </form>
+{% else %}
 
-            </div>
-        </div>
-    </div>
-</div>
+<div>Awesome </div>
 
+{% endif %}
 
-<!-- Modal Login-->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="login">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username"
-                               placeholder="Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <div id="errorAlert" class="alert alert-danger" role="alert" style="display: none"></div>
-                    <div id="successAlert" class="alert alert-success" role="alert" style="display: none"></div>
-                </form>
+<!-- Placeholder for login modal -->
+<div id="login-modal"></div>
 
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- PlaceHolder for register modal -->
+<div id="register-modal"></div>
 
 <h1>ProMan</h1>
 <div id="boards">Boards are loading...</div>
