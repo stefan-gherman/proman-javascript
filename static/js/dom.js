@@ -88,7 +88,7 @@ export let dom = {
         for (let button of boardExpandButton) {
             if (button.id.includes('buttonNewStatusForBoard')) {
                 // console.log('entered if ');
-                button.addEventListener('click', handleNewColumnlick);
+                button.addEventListener('click', handleNewColumnclick);
 
             } else {
                 button.addEventListener('click', async function (event) {
@@ -159,14 +159,15 @@ function createAppendCard(element) {
 
 }
 
-function handleNewColumnlick(event) {
+function handleNewColumnclick(event) {
     console.clear()
     let board_id = event.target.id.slice(-1);
-    let input = document.querySelector("input");
+    let inputsColumnName = document.querySelectorAll("input");
     // let status_title;
 
-
-    input.addEventListener('change', function (event) {
+    // console.log(input);
+    for (let input of inputsColumnName){
+        input.addEventListener('change', function (event) {
         console.log(event.target.value);
         let status_title = event.target.value;
         let data = {board_id, status_title};
@@ -179,6 +180,8 @@ function handleNewColumnlick(event) {
         };
         fetch('http://127.0.0.1:5000/api/create-status', options).then(() => location.reload());
     });
+    }
+
 
 
 }
