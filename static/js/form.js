@@ -22,3 +22,28 @@ $(document).ready(function () {
         event.preventDefault();
     });
 });
+
+
+$(document).ready(function () {
+    $('#login').on('submit', function (event) {
+        $.ajax({
+            data: {
+                username: $('#username').val(),
+                password: $('#password').val()
+            },
+            type: 'POST',
+            url: ('/login')
+        }).done(function (data) {
+            if (data.error) {
+                $('#errorAlert').text(data.error).show();
+                $('#successAlert').hide();
+            } else {
+                $('#successAlert').text(data.success).show();
+                $('#errorAlert').hide();
+            }
+
+        });
+
+        event.preventDefault();
+    });
+});
