@@ -28,18 +28,18 @@ $(document).ready(function () {
     $('#login').on('submit', function (event) {
         $.ajax({
             data: {
-                username: $('#username').val(),
-                password: $('#password').val()
+                username: $('#username-login').val(),
+                password: $('#password-login').val()
             },
             type: 'POST',
             url: ('/login')
         }).done(function (data) {
             if (data.error) {
-                $('#errorAlert').text(data.error).show();
-                $('#successAlert').hide();
+                $('#errorAlert-login').text(data.error).show();
+                $('#successAlert-login').hide();
             } else {
-                $('#successAlert').text(data.success).show();
-                $('#errorAlert').hide();
+                $('#successAlert-login').text(data.success).show();
+                $('#errorAlert-login').hide();
             }
 
         });
