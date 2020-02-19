@@ -65,3 +65,11 @@ def get_cards_for_status(cursor, status_id):
     result = cursor.fetchall()
     print(result)
     return result
+
+@persistence.connection_handler
+def add_new_status(cursor, status_title, border_id):
+    cursor.execute(
+        sql.SQL('INSERT INTO statuses VALUES (%s, %s);')
+            .format(
+        ), [status_title, border_id]
+    )
