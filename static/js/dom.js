@@ -41,12 +41,15 @@ export let dom = {
                         </div>
                     </p>
                     <div class="collapse" id="collapseExample${board.id}">
-                    <div class="container">
+                    
                       <div class="card card-body container " >
+                      <div class="container">
+                      <div class="row">
+                      
                         <table class="table table-bordered">
                           <thead>
                             <tr >
-                              
+
                             </tr>
                           </thead>
                           <tbody>
@@ -59,10 +62,11 @@ export let dom = {
 
                           </tbody>
                         </table>
+                        </div>
                       </div>
-                    </div>
+                     </div>
                 </div>
-                </div>
+             </div>
 `;
 
         }
