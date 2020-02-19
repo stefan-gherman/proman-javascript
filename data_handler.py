@@ -66,6 +66,7 @@ def get_cards_for_status(cursor, status_id):
     return result
 
 
+# Save username and password in db
 @persistence.connection_handler
 def save_credentials(cursor, username, password):
     cursor.execute(
@@ -75,3 +76,18 @@ def save_credentials(cursor, username, password):
             col2=sql.Identifier('password')
         ), [username, password]
     )
+
+
+@persistence.connection_handler
+def get_hash_pass(cursor, username):
+    cursor.execute(
+        sql.SQL('SELECT {col2} FROM {table} WHERE {col1} = %s').format(
+            col1=sql.Identifier('username'),
+            col2=sql.Identifier('password'),
+            table=sql.Identifier('users')
+        ), [username]
+
+    )
+
+    result = cursor.fetchall()
+    return result
