@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import jsonify
-import bcrypt
+import bcrypt, os
 
 
 def json_response(func):
@@ -30,3 +30,8 @@ def verify_password(password_text, hashed_password):
 def username_validation(username):
     validate_user = username.replace(' ', '')
     return validate_user
+
+
+def random_key():
+    key = os.urandom(24)
+    return key
