@@ -82,29 +82,29 @@ export let dom = {
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
 
         const boardExpandButton = document.getElementsByTagName('button');
-        console.log(boardExpandButton);
+        // console.log(boardExpandButton);
 
-            for (let button of boardExpandButton) {
-                if (button.id.slice(0, 23) === 'buttonNewStatusForBoard') {
-                console.log('entered if ');
+        console.clear();
+        for (let button of boardExpandButton) {
+            if (button.id.includes('buttonNewStatusForBoard')) {
+                // console.log('entered if ');
                 button.addEventListener('click', handleNewColumnlick);
 
-            }
-        else {
+            } else {
                 button.addEventListener('click', async function (event) {
                     let idForBoard = button.id.slice(6);
                     let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
                     response = await response.json();
                     console.log(response);
-                    let boardBody = document.getElementById(`${idForBoard}`)
+                    let boardBody = document.getElementById(`${idForBoard}`);
                     boardBody.innerHTML = '';
                     for (let element of response) {
                         createAppend(element);
-                        console.log('Enter fetch');
+                        // console.log('Enter fetch');
                         let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
-                        console.log('Before JSON');
+                        // console.log('Before JSON');
                         columnResponse = await columnResponse.json();
-                        console.log('After fetch');
+                        // console.log('After fetch');
                         let columnBody = document.getElementById(`column_tr_${element.id}`);
                         columnBody.innerHTML = '';
                         columnBody.innerText = element.title;
@@ -131,7 +131,7 @@ export let dom = {
 };
 
 function createAppend(element) {
-    let boardBody = document.getElementById(`${element.board_id}`)
+    let boardBody = document.getElementById(`${element.board_id}`);
     let column = document.createElement('th');
     let column_tr = document.createElement('tr');
     // column.setAttribute('class', 'col-sm');
@@ -147,33 +147,40 @@ function createAppend(element) {
 
 function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.id}`);
-    let card = document.createElement('td');
-    card.setAttribute('class', 'col-md-2');
-    card.setAttribute('style', ' margin: 30px; border: 2px solid black');
-    card.setAttribute('id', `card_${element.id}`);
-    card.innerText += `${element.title}`;
-    columnBody.appendChild(card);
+    if (columnBody) {
+        let card = document.createElement('td');
+        card.setAttribute('class', 'col-md-2');
+        card.setAttribute('style', ' margin: 30px; border: 2px solid black');
+        card.setAttribute('id', `card_${element.id}`);
+        card.innerText += `${element.title}`;
+        columnBody.appendChild(card);
+    }
+
 
 }
 
 function handleNewColumnlick(event) {
-    let board_id = event.target.id.slice(23);
-    // let input = document.querySelector("input");
+    console.clear()
+    let board_id = event.target.id.slice(-1);
+    let input = document.querySelector("input");
     // let status_title;
-    // input.addEventListener('change', function(){
-    //     console.log(this.value);
-    // status_title = this.value;});
 
-    let status_title = 'New Status';
-    let data = { board_id, status_title};
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    };
-    fetch('http://localhost:5000/api/create-status', options);
+
+    input.addEventListener('change', function (event) {
+        console.log(event.target.value);
+        let status_title = event.target.value;
+        let data = {board_id, status_title};
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        fetch('http://127.0.0.1:5000/api/create-status', options).then(() => location.reload());
+    });
+
+
 }
 
 

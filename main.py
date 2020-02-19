@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, redirect
 from util import json_response
 
 import data_handler
@@ -49,6 +49,7 @@ def create_status():
     board_id = request.json['board_id']
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
+    return redirect("/")
 
 def main():
     app.run(debug=True)
