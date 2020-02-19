@@ -30,7 +30,6 @@ def get_boards(cursor):
     return result
 
 
-
 def get_cards_for_board(board_id):
     persistence.clear_cache()
     all_cards = persistence.get_cards()
@@ -65,3 +64,14 @@ def get_cards_for_status(cursor, status_id):
     result = cursor.fetchall()
     print(result)
     return result
+
+
+@persistence.connection_handler
+def save_credentials(cursor, username, password):
+    cursor.execute(
+        sql.SQL("INSERT INTO {table} (username, password) VALUES(%s, %s)").format(
+            table=sql.Identifier('users'),
+            col1=sql.Identifier('username'),
+            col2=sql.Identifier('password')
+        ), [username, password]
+    )
