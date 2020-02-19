@@ -65,3 +65,10 @@ def get_cards_for_status(cursor, status_id):
     result = cursor.fetchall()
     print(result)
     return result
+
+@persistence.connection_handler
+def create_new_board(cursor, board_title, owner_public='public'):
+    cursor.execute(f'''
+        INSERT INTO boards (title, owner)
+        VALUES ('{board_title}','{owner_public}');
+''')

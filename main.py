@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, redirect
 from util import json_response
 
 import data_handler
@@ -43,6 +43,12 @@ def get_statuses_for_board(board_id):
 @json_response
 def get_cards_for_status(status_id):
     return data_handler.get_cards_for_status(status_id)
+
+@app.route("/api/create-board", methods=['GET','POST'])
+def create_new_board():
+    board_title = request.form['board-title']
+    data_handler.create_new_board(board_title)
+    return redirect(url_for('index'))
 
 def main():
     app.run(debug=True)
