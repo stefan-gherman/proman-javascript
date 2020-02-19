@@ -27,3 +27,6 @@ def verify_password(password_text, hashed_password):
     return bcrypt.checkpw(password_text.encode('utf-8'), hashed_bytes_password)
 
 
+def username_validation(username):
+    validate_user = username.replace(' ', '')
+    return validate_user
