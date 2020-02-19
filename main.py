@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, jsonify, escape, session
+from flask import Flask, render_template, url_for, request, jsonify, escape, session, redirect
 from util import json_response, hash_password, verify_password
 
 import data_handler
@@ -13,9 +13,10 @@ def index():
     """
     This is a one-pager which shows all the boards and cards
     """
+    logged_in = None
     if 'username' in session:
-        return 'Logged in as %s' % escape(session['username'])
-    return render_template('index.html')
+        logged_in = session['username']
+    return render_template('index.html', logged_in=logged_in)
 
 
 @app.route('/register', methods=['POST'])
@@ -32,25 +33,26 @@ def register():
         return jsonify({'error': 'Username already exists, try again.'})
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
-
-    username = util.username_validation(request.form['username'])
-    password = request.form['password']
-    print(username)
-    print(password)
-    table_hash_pass = data_handler.get_hash_pass(username=username)
-    print(table_hash_pass)
     try:
-        good_login = verify_password(password, table_hash_pass[0]['password'])
+        username = util.username_validation(request.form['username'])
+        password = request.form['password']
+        table_hash_pass = data_handler.get_hash_pass(username=username)
+        if verify_password(password, table_hash_pass[0]['password']):
+            session['username'] = username
+            # # return render_template('index.html')
+            # # jsonify({'success': 'Login was successful'})
+            # return redirect(url_for('login'))
     except:
-        print('error')
-    # print(good_login)
-
+        return jsonify({'error': 'Wrong username or password'})
     return render_template('index.html')
 
 
-
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 
 @app.route("/get-boards")
