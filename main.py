@@ -1,10 +1,11 @@
-from flask import Flask, render_template, url_for, request, jsonify
+from flask import Flask, render_template, url_for, request, jsonify, escape, session
 from util import json_response, hash_password, verify_password
 
 import data_handler
 import util
 
 app = Flask(__name__)
+app.secret_key = util.random_key()
 
 
 @app.route('/')
@@ -12,6 +13,8 @@ def index():
     """
     This is a one-pager which shows all the boards and cards
     """
+    if 'username' in session:
+        return 'Logged in as %s' % escape(session['username'])
     return render_template('index.html')
 
 
@@ -27,6 +30,27 @@ def register():
             return jsonify({'error': 'Missing Data'})
     except:
         return jsonify({'error': 'Username already exists, try again.'})
+
+
+@app.route('/login', methods=['POST'])
+def login():
+
+    username = util.username_validation(request.form['username'])
+    password = request.form['password']
+    print(username)
+    print(password)
+    table_hash_pass = data_handler.get_hash_pass(username=username)
+    print(table_hash_pass)
+    try:
+        good_login = verify_password(password, table_hash_pass[0]['password'])
+    except:
+        print('error')
+    # print(good_login)
+
+    return render_template('index.html')
+
+
+
 
 
 @app.route("/get-boards")
