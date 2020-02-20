@@ -30,7 +30,6 @@ def get_boards(cursor):
     return result
 
 
-
 def get_cards_for_board(board_id):
     persistence.clear_cache()
     all_cards = persistence.get_cards()
@@ -65,3 +64,9 @@ def get_cards_for_status(cursor, status_id):
     result = cursor.fetchall()
     print(result)
     return result
+
+
+@persistence.connection_handler
+def add_new_status(cursor, status_title, border_id):
+    query = "INSERT INTO statuses (title, board_id) VALUES (%s, %s);"
+    cursor.execute(query, (status_title, int(border_id)))
