@@ -91,3 +91,45 @@ def create_new_board(cursor, board_title, owner_public='public'):
 def add_new_status(cursor, status_title, border_id):
     query = "INSERT INTO statuses (title, board_id) VALUES (%s, %s);"
     cursor.execute(query, (status_title, int(border_id)))
+
+
+@persistence.connection_handler
+def save_credentials(cursor, username, password):
+    cursor.execute(
+        sql.SQL("INSERT INTO {table} (username, password) VALUES(%s, %s)").format(
+            table=sql.Identifier('users'),
+            col1=sql.Identifier('username'),
+            col2=sql.Identifier('password')
+        ), [username, password]
+    )
+
+
+@persistence.connection_handler
+def get_hash_pass(cursor, username):
+    cursor.execute(
+        sql.SQL('SELECT {col2} FROM {table} WHERE {col1} = %s').format(
+            col1=sql.Identifier('username'),
+            col2=sql.Identifier('password'),
+            table=sql.Identifier('users')
+        ), [username]
+
+    )
+
+    result = cursor.fetchall()
+    return result
+@persistence.connection_handler
+def get_first_status_id_for_board(cursor, board_id):
+    cursor.execute(f"""
+        SELECT id FROM statuses WHERE board_id = {board_id}
+        ORDER BY id ASC;
+""")
+    result = cursor.fetchone()
+    return result['id']
+
+
+@persistence.connection_handler
+def create_card(cursor, card_title, board_id, status_id):
+    cursor.execute(f"""
+        INSERT INTO cards (title, board_id, status_id)
+        VALUES ('{card_title}', {board_id}, {status_id});
+""")
