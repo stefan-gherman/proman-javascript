@@ -182,7 +182,7 @@ function createAppend(element) {
 }
 
 function createAppendCard(element) {
-    let columnBody = document.getElementById(`column_tr_${element.id}`);
+    let columnBody = document.getElementById(`column_tr_${element.status_id}`);
     let cardBody = document.createElement('div');
     cardBody.setAttribute('class', 'col-md');
     cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');

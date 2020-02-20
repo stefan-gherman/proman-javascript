@@ -44,7 +44,7 @@ def get_cards_for_board(board_id):
 @persistence.connection_handler
 def get_statuses_for_board(cursor, board_id):
     cursor.execute(
-        sql.SQL('SELECT statuses.* from statuses WHERE statuses.board_id = %s;')
+        sql.SQL('SELECT statuses.* from statuses WHERE statuses.board_id = (%s);')
             .format(
         ), [board_id]
     )
@@ -56,7 +56,7 @@ def get_statuses_for_board(cursor, board_id):
 @persistence.connection_handler
 def get_cards_for_status(cursor, status_id):
     cursor.execute(
-        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = %s ORDER BY cards.column_order;')
+        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = (%s) ORDER BY cards.column_order;')
             .format(
         ), [status_id]
     )
