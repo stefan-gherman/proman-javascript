@@ -78,6 +78,8 @@ def save_credentials(cursor, username, password):
     )
 
 
+
+
 @persistence.connection_handler
 def get_hash_pass(cursor, username):
     cursor.execute(
@@ -89,5 +91,9 @@ def get_hash_pass(cursor, username):
 
     )
 
+
+
     result = cursor.fetchall()
     return result
+
+

@@ -24,6 +24,9 @@ $(document).ready(function () {
 });
 
 
+
+
+
 $(document).ready(function () {
     $('#login').on('submit', function (event) {
         $.ajax({
@@ -47,3 +50,5 @@ $(document).ready(function () {
         event.preventDefault();
     });
 });
+
+

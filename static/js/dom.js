@@ -179,6 +179,7 @@ export function createRegisterModal() {
 </div>
     `;
     document.querySelector('#register-modal').innerHTML = registerModal;
+
 }
 
 export function createLoginModal() {
@@ -217,6 +218,7 @@ export function createLoginModal() {
     `
     document.querySelector('#login-modal').innerHTML = loginModal;
     refreshloginModal();
+
 }
 
 

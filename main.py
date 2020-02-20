@@ -19,6 +19,8 @@ def index():
     return render_template('index.html', logged_in=logged_in)
 
 
+
+
 @app.route('/register', methods=['POST'])
 def register():
     try:
@@ -31,6 +33,8 @@ def register():
             return jsonify({'error': 'Missing Data'})
     except:
         return jsonify({'error': 'Username already exists, try again.'})
+
+
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -46,10 +50,14 @@ def login():
     return render_template('index.html')
 
 
+
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
+
+
 
 
 @app.route("/get-boards")
@@ -59,6 +67,8 @@ def get_boards():
     All the boards
     """
     return data_handler.get_boards()
+
+
 
 
 # @app.route("/get-cards/<int:board_id>")
@@ -77,6 +87,8 @@ def get_statuses_for_board(board_id):
     return data_handler.get_statuses_for_board(board_id)
 
 
+
+
 @app.route("/get-cards/<status_id>")
 @json_response
 def get_cards_for_status(status_id):
@@ -89,6 +101,8 @@ def main():
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))
+
+
 
 
 if __name__ == '__main__':

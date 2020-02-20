@@ -22,9 +22,13 @@ def hash_password(password_text):
     return hashed_bytes.decode('utf-8')
 
 
+
+
 def verify_password(password_text, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(password_text.encode('utf-8'), hashed_bytes_password)
+
+
 
 
 def username_validation(username):
@@ -32,6 +36,10 @@ def username_validation(username):
     return validate_user
 
 
+
+
 def random_key():
     key = os.urandom(24)
     return key
+
+
