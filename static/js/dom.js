@@ -49,7 +49,7 @@ export let dom = {
                         <input type="text" class="inputId" placeholder="Add new Status">
                     </div>
                     <div class="collapse" id="collapseExample${board.id}">
-                      <div class="card card-body container " >
+                      <div class="card card-body container" >
                         <div class="container-fluid">
                             <div class="row" id="${board.id}">
                             </div>
