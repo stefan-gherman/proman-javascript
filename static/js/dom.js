@@ -35,7 +35,7 @@ export let dom = {
                               <button type="button" class="btn btn-light rounded border-secondary" >+ New Card</button>
 
                             </div>
-                            <button id ="board_${board.id}" class="btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
+                            <button id ="board_${board.id}" class="card-btn btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
                                 v
                             </button>
                         </div>
@@ -76,7 +76,7 @@ export let dom = {
         let boardsContainer = document.querySelector('#boards');
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
 
-        const boardExpandButton = document.getElementsByTagName('button');
+        const boardExpandButton = document.querySelectorAll('.card-btn');
         console.log(boardExpandButton);
 
         for (let button of boardExpandButton) {
@@ -190,7 +190,7 @@ export function createLoginModal() {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -205,7 +205,7 @@ export function createLoginModal() {
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password-login" placeholder="Password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary" id="submit-login" >Submit</button>
                     <div id="errorAlert-login" class="alert alert-danger" role="alert" style="display: none"></div>
                     <div id="successAlert-login" class="alert alert-success" role="alert" style="display: none">Logged in</div>
                 </form>
@@ -216,8 +216,17 @@ export function createLoginModal() {
 </div>
     `
     document.querySelector('#login-modal').innerHTML = loginModal;
-    // window.location.reload()
+    refreshloginModal();
 }
+
+
+function refreshloginModal(){
+    let submitLogin = document.querySelector('#close-login');
+    submitLogin.addEventListener('click', function(){
+       location.reload();
+    });
+}
+
 
 
 
