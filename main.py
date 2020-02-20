@@ -6,7 +6,7 @@ import data_handler
 import util
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.secret_key = util.random_key()
 
@@ -65,9 +65,12 @@ def create_new_board():
 
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
+    print('rq    ', request)
     board_id = request.json['board_id']
+    print('py board id ', board_id)
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
+    print('db done')
     return redirect("/")
 
 
