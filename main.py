@@ -66,6 +66,14 @@ def create_new_board():
     return redirect(url_for('index'))
 
 
+@app.route('/api/create-status', methods=['POST'])
+def create_status():
+    board_id = request.json['board_id']
+    status_title = request.json['status_title']
+    data_handler.add_new_status(status_title, board_id)
+    return redirect("/")
+
+
 def main():
     app.run(debug=True)
 

@@ -42,6 +42,13 @@ export let dom = {
                             </button>
                         </div>
                     </p>
+                    <div>
+                    <button id="buttonNewStatusForBoard${board.id}" class="btn btn-light rounded border-secondary" data-toggle="collapse" href="#collapseExampleInput${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    + New Column
+                    </button>
+                      <div class="collapse inputClass" id="collapseExampleInput${board.id}">
+                        <input type="text" class="inputId" placeholder="Add new Status">
+                    </div>
                     <div class="collapse" id="collapseExample${board.id}">
                     
                       <div class="card card-body container " >
@@ -74,15 +81,22 @@ export let dom = {
 
 
         for (let button of boardExpandButton) {
+            if (button.id.includes('buttonNewStatusForBoard')) {
+                // console.log('entered if ');
+                button.addEventListener('click', handleNewColumnclick);
+
+            } else {
             button.addEventListener('click', async function (event) {
                 let idForBoard = button.id.slice(6);
                 let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
                 response = await response.json();
                 //console.log(response);
+                console.log('Pop Boards');
                 let boardBody = document.getElementById(`${idForBoard}`);
                 boardBody.innerHTML = '';
 
                 for (let element of response) {
+                    console.log('Populating with the', element);
                     createAppend(element);
                     let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
                     columnResponse = await columnResponse.json();
@@ -150,6 +164,7 @@ export let dom = {
                 });
                 console.log(`Board event ${this.id} expanded`);
             });
+            }
         }
 
     },
@@ -192,7 +207,6 @@ function createAppendCard(element) {
     cardBody.setAttribute('data-order', element['column_order']);
     cardBody.innerText += `${element.title}`;
     columnBody.appendChild(cardBody);
-
 }
 
 const insertObjectInArray = (elem, arr) => {
@@ -219,4 +233,28 @@ const insertObjectInArray = (elem, arr) => {
         arr.push(elem);
     }
 
+};
+
+function handleNewColumnclick(event) {
+    //console.clear()
+    let board_id = event.target.id.slice(-1);
+    let inputsColumnName = document.querySelectorAll("input");
+    // let status_title;
+
+    // console.log(input);
+    for (let input of inputsColumnName) {
+        input.addEventListener('change', function (event) {
+            console.log(event.target.value);
+            let status_title = event.target.value;
+            let data = {board_id, status_title};
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            };
+            fetch('http://127.0.0.1:5000/api/create-status', options).then(() => location.reload());
+        });
+    }
 }
