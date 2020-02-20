@@ -35,9 +35,8 @@ export let dom = {
                               <button type="button" class="btn btn-light rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
 
                             </div>
-
-                            <button id ="board_${board.id}" class="card-btn btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
-
+                            
+                            <button id ="board_${board.id}" class="btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
                                 v
                             </button>
                         </div>
@@ -78,9 +77,7 @@ export let dom = {
         let boardsContainer = document.querySelector('#boards');
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
 
-
-        const boardExpandButton = document.querySelectorAll('.card-btn');
-        console.log(boardExpandButton);
+        const boardExpandButton = document.getElementsByTagName('button');
 
         console.log('all buttons: ', boardExpandButton);
         // console.log(boardExpandButton);
@@ -238,7 +235,8 @@ function createAppend(element) {
 }
 
 function createAppendCard(element) {
-let columnBody = document.getElementById(`column_tr_${element.status_id}`);
+
+    let columnBody = document.getElementById(`column_tr_${element.status_id}`);
     let cardBody = document.createElement('div');
     cardBody.setAttribute('class', 'col-md');
     cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
@@ -250,90 +248,6 @@ let columnBody = document.getElementById(`column_tr_${element.status_id}`);
     columnBody.appendChild(cardBody);
 
 }
-
-export function createRegisterModal() {
-    let registerModal = `
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Register</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="register">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username"
-                               placeholder="Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <div id="errorAlert" class="alert alert-danger" role="alert" style="display: none"></div>
-                    <div id="successAlert" class="alert alert-success" role="alert" style="display: none"></div>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
-    `;
-    document.querySelector('#register-modal').innerHTML = registerModal;
-}
-
-export function createLoginModal() {
-    let loginModal = `
-    <!-- Modal Login-->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="login">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username-login"
-                               placeholder="Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password-login" placeholder="Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="submit-login" >Submit</button>
-                    <div id="errorAlert-login" class="alert alert-danger" role="alert" style="display: none"></div>
-                    <div id="successAlert-login" class="alert alert-success" role="alert" style="display: none">Logged in</div>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
-    `
-    document.querySelector('#login-modal').innerHTML = loginModal;
-    refreshloginModal();
-}
-
-
-function refreshloginModal(){
-    let submitLogin = document.querySelector('#close-login');
-    submitLogin.addEventListener('click', function(){
-       location.reload();
-    });
-}
-
-
 
 const insertObjectInArray = (elem, arr) => {
 
