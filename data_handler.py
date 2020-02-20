@@ -118,6 +118,8 @@ def get_hash_pass(cursor, username):
 
     result = cursor.fetchall()
     return result
+
+
 @persistence.connection_handler
 def get_first_status_id_for_board(cursor, board_id):
     cursor.execute(f"""
@@ -126,6 +128,26 @@ def get_first_status_id_for_board(cursor, board_id):
 """)
     result = cursor.fetchone()
     return result['id']
+
+
+@persistence.connection_handler
+def get_status_last_card_id(cursor, first_status_id):
+    cursor.execute(f"""
+        SELECT id FROM cards WHERE status_id = {first_status_id}
+        ORDER BY column_order DESC;
+""")
+    result = cursor.fetchone()
+    return result['id']
+
+
+@persistence.connection_handler
+def get_status_last_card_order(cursor, first_status_id):
+    cursor.execute(f"""
+        SELECT column_order FROM cards WHERE status_id = {first_status_id}
+        ORDER BY column_order DESC;
+""")
+    result = cursor.fetchone()
+    return result['column_order']
 
 
 @persistence.connection_handler

@@ -354,7 +354,23 @@ function handleNewCardClick(event) {
         },
         body: JSON.stringify(data)
     };
-    fetch('http://localhost:5000/api/create-card', options).then(() => location.reload());
-    fetch(`${window.origin}/`);
+    fetch('http://localhost:5000/api/create-card', options);
+    // Artificial temporary visual update, must change before card edit
+    fetch(`http://localhost:5000/api/board-first-status/${board_id}`)
+        .then(response => response.json())
+        .then(function(data) {
+        console.log('data ', data);
+        let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
+        let tempCard = document.createElement('div');
+        tempCard.setAttribute('class', 'col-md');
+        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+        tempCard.setAttribute('id', `${data.last_card_id}`);
+        tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+        tempCard.setAttribute('data-board', `${board_id}`);
+        tempCard.setAttribute('data-order', `${data.last_card_order}`);
+        tempCard.innerText += `${card_title}`;
+        console.log('temp card     ', tempCard);
+        tempColumn.appendChild(tempCard);
+    });
 }
 
