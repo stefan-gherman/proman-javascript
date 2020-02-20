@@ -44,7 +44,7 @@ def get_cards_for_board(board_id):
 @persistence.connection_handler
 def get_statuses_for_board(cursor, board_id):
     cursor.execute(
-        sql.SQL('SELECT statuses.* from statuses WHERE statuses.board_id = %s;')
+        sql.SQL('SELECT statuses.* from statuses WHERE statuses.board_id = (%s);')
             .format(
         ), [board_id]
     )
@@ -56,14 +56,27 @@ def get_statuses_for_board(cursor, board_id):
 @persistence.connection_handler
 def get_cards_for_status(cursor, status_id):
     cursor.execute(
-        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = %s;')
+        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = (%s) ORDER BY cards.column_order;')
             .format(
         ), [status_id]
     )
 
     result = cursor.fetchall()
-    print(result)
     return result
+
+
+@persistence.connection_handler
+def insert_new_ordered_cards(cursor, card_id, board_id, status_id, column_order):
+    cursor.execute(
+        sql.SQL('UPDATE {cards} SET {board_id} = (%s), {status_id} = (%s), {column_order} = (%s) WHERE {id} = (%s);')
+            .format(
+            cards=sql.Identifier('cards'),
+            board_id=sql.Identifier('board_id'),
+            status_id=sql.Identifier('status_id'),
+            column_order=sql.Identifier('column_order'),
+            id=sql.Identifier('id')
+        ), [board_id, status_id, column_order, card_id]
+    )
 
 
 @persistence.connection_handler
@@ -95,5 +108,6 @@ def create_new_board(cursor, board_title, owner_public='public'):
 def add_new_status(cursor, status_title, border_id):
     query = "INSERT INTO statuses (title, board_id) VALUES (%s, %s);"
     cursor.execute(query, (status_title, int(border_id)))
+
 
 

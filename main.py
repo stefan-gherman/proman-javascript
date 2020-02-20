@@ -1,4 +1,6 @@
-from flask import Flask, render_template, url_for, request, redirect
+
+from flask import Flask, render_template, url_for, make_response, request, jsonify, redirect
+
 from util import json_response
 
 import data_handler
@@ -46,6 +48,20 @@ def get_cards_for_status(status_id):
 
 
 
+@app.route('/move', methods=['POST'])
+def reorder_cards():
+    req = request.get_json()
+    print(req)
+    card_id = int(req['id'])
+    board_id = int(req['board_id'])
+    status_id = int(req['status_id'])
+    column_order = int(req['column_order'])
+
+    print(card_id, board_id, status_id, column_order)
+    data_handler.insert_new_ordered_cards(card_id, board_id, status_id, column_order)
+    return make_response('OK', 200)
+
+
 @app.route('/api/create-card', methods=['POST'])
 def create_card():
     board_id = request.json['board_id']
@@ -65,6 +81,7 @@ def create_status():
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
     return redirect("/")
+
 
 
 
