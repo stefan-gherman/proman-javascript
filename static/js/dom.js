@@ -130,10 +130,10 @@ export let dom = {
                         child.dataset.order = i;
                         i += 1;
                         console.log(child, 'from target');
-                         let dataToSend = {
-                            status_id:child.dataset.card.slice(-1)[0],
-                            board_id:child.dataset.board,
-                            column_order:child.dataset.order,
+                        let dataToSend = {
+                            status_id: child.dataset.card.slice(-1)[0],
+                            board_id: child.dataset.board,
+                            column_order: child.dataset.order,
                             id: child.id.slice(5)
                         };
                         fetch(`${window.origin}/move`, {
