@@ -30,7 +30,7 @@ export let dom = {
                               <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 ${board.title}
                               </a>
-                              <button type="button" class="btn btn-light rounded border-secondary" >+ New Card</button>
+                              <button type="button" class="btn btn-light rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
 
                             </div>
                             
@@ -82,40 +82,69 @@ export let dom = {
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
 
         const boardExpandButton = document.getElementsByTagName('button');
+        console.log('all buttons: ', boardExpandButton);
         // console.log(boardExpandButton);
+
 
         console.clear();
         for (let button of boardExpandButton) {
-            if (button.id.includes('buttonNewStatusForBoard')) {
-                // console.log('entered if ');
-                button.addEventListener('click', handleNewColumnclick);
+            if (button.id.slice(0, 21) === 'buttonNewCardForBoard') {
+                button.addEventListener('click', handleNewCardClick);
+            }
+            else {
+            button.addEventListener('click', async function (event) {
+                let idForBoard = button.id.slice(6);
+                let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
+                response = await response.json();
+                console.log(response);
+                let boardBody = document.getElementById(`${idForBoard}`)
+                boardBody.innerHTML = '';
+                for (let element of response) {
+                    createAppend(element);
+                    console.log('Enter fetch');
+                    let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
+                    console.log('Before JSON');
+                    columnResponse = await columnResponse.json();
+                    console.log('After fetch');
+                    let columnBody = document.getElementById(`column_tr_${element.id}`);
+                    columnBody.innerHTML = '';
+                    columnBody.innerText = element.title;
+                    for (let card of columnResponse) {
+                        createAppendCard(card);
+                    }
+                  
+//             if (button.id.includes('buttonNewStatusForBoard')) {
+//                 // console.log('entered if ');
+//                 button.addEventListener('click', handleNewColumnclick);
 
-            } else {
-                button.addEventListener('click', async function (event) {
-                    let idForBoard = button.id.slice(6);
-                    let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
-                    response = await response.json();
-                    console.log(response);
-                    let boardBody = document.getElementById(`${idForBoard}`);
-                    boardBody.innerHTML = '';
-                    for (let element of response) {
-                        createAppend(element);
-                        // console.log('Enter fetch');
-                        let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
-                        // console.log('Before JSON');
-                        columnResponse = await columnResponse.json();
-                        // console.log('After fetch');
-                        let columnBody = document.getElementById(`column_tr_${element.id}`);
-                        columnBody.innerHTML = '';
-                        columnBody.innerText = element.title;
-                        for (let card of columnResponse) {
-                            createAppendCard(card);
-                        }
+//             } else {
+//                 button.addEventListener('click', async function (event) {
+//                     let idForBoard = button.id.slice(6);
+//                     let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
+//                     response = await response.json();
+//                     console.log(response);
+//                     let boardBody = document.getElementById(`${idForBoard}`);
+//                     boardBody.innerHTML = '';
+//                     for (let element of response) {
+//                         createAppend(element);
+//                         // console.log('Enter fetch');
+//                         let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
+//                         // console.log('Before JSON');
+//                         columnResponse = await columnResponse.json();
+//                         // console.log('After fetch');
+//                         let columnBody = document.getElementById(`column_tr_${element.id}`);
+//                         columnBody.innerHTML = '';
+//                         columnBody.innerText = element.title;
+//                         for (let card of columnResponse) {
+//                             createAppendCard(card);
+//                         }
+
 
                     }
 
-                    console.log(`Board event ${this.id} expanded`);
-                });
+
+                console.log(`Board event ${this.id} expanded`);
+            });
             }
         }
     },
@@ -147,7 +176,7 @@ function createAppend(element) {
 
 function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.id}`);
-    if (columnBody) {
+if (columnBody) {
         let card = document.createElement('td');
         card.setAttribute('class', 'col-md-2');
         card.setAttribute('style', ' margin: 30px; border: 2px solid black');
@@ -155,9 +184,22 @@ function createAppendCard(element) {
         card.innerText += `${element.title}`;
         columnBody.appendChild(card);
     }
-
-
 }
+
+function handleNewCardClick(event) {
+    let board_id = event.target.id.slice(21);
+    let card_title = 'New Card';
+    let data = { board_id, card_title};
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    fetch('http://localhost:5000/api/create-card', options);
+}
+
 
 function handleNewColumnclick(event) {
     console.clear()
@@ -184,6 +226,7 @@ function handleNewColumnclick(event) {
 
 
 
-}
+
+
 
 

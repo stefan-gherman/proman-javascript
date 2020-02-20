@@ -45,18 +45,18 @@ INSERT INTO  statuses(title, board_id) VALUES('in progress', 3);
 INSERT INTO  statuses(title, board_id) VALUES('testing', 3);
 
 
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'new card 1', 0 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'new card 2', 0 + 1, 1);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'in progress card', 1 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'planning', 2 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'done card 1', 3 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'done card 1', 3 + 1, 1);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'new card 1', 0 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'new card 2', 0 + 1, 1);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'in progress card', 1 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'planning', 2 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'done card 1', 3 + 1, 0);
-INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'done car 1', 3 + 1, 1);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'new card 1', 1, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'new card 2', 1, 1);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'in progress card', 2, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'planning', 3, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'done card 1', 4, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'done card 1', 5, 1);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'new card 1', 6, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'new card 2', 7, 1);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'in progress card', 8, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'planning', 9, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'done card 1', 10, 0);
+INSERT INTO cards(board_id, title, status_id, column_order) VALUES (2, 'done car 1', 11, 1);
 
 
 CREATE TABLE users (
