@@ -1,19 +1,57 @@
 
-from flask import Flask, render_template, url_for, make_response, request, jsonify, redirect
+from flask import Flask, render_template, url_for, request, jsonify, escape, session, redirect, make_response
+from util import json_response, hash_password, verify_password
 
-from util import json_response
 
 import data_handler
+import util
 
 app = Flask(__name__)
+app.secret_key = util.random_key()
 
 
-@app.route("/")
+@app.route('/')
 def index():
     """
     This is a one-pager which shows all the boards and cards
     """
+    logged_in = None
+    if 'username' in session:
+        logged_in = session['username']
+    return render_template('index.html', logged_in=logged_in)
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    try:
+        username = util.username_validation(request.form['username'])
+        password = hash_password(request.form['password'])
+        if username and password:
+            data_handler.save_credentials(username, password)
+            return jsonify({'success': 'Account created, try to login.'})
+        else:
+            return jsonify({'error': 'Missing Data'})
+    except:
+        return jsonify({'error': 'Username already exists, try again.'})
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    try:
+        username = util.username_validation(request.form['username'])
+        password = request.form['password']
+        table_hash_pass = data_handler.get_hash_pass(username=username)
+        if verify_password(password, table_hash_pass[0]['password']):
+            session['username'] = username
+    except:
+        return jsonify({'error': 'Wrong username or password'})
     return render_template('index.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 
 @app.route("/get-boards")
@@ -81,10 +119,7 @@ def create_status():
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
     return redirect("/")
-
-
-
-
+  
 def main():
     app.run(debug=True)
 
