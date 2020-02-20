@@ -109,7 +109,7 @@ export let dom = {
                             i += 1;
                             console.log(child, 'from source');
                             let dataToSend = {
-                                status_id: child.dataset.card.slice(-1)[0],
+                                status_id: child.dataset.card.slice(10),
                                 board_id: child.dataset.board,
                                 column_order: child.dataset.order,
                                 id: child.id.slice(5)
@@ -131,7 +131,7 @@ export let dom = {
                         i += 1;
                         console.log(child, 'from target');
                         let dataToSend = {
-                            status_id: child.dataset.card.slice(-1)[0],
+                            status_id: child.dataset.card.slice(10),
                             board_id: child.dataset.board,
                             column_order: child.dataset.order,
                             id: child.id.slice(5)
