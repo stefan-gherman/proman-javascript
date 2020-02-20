@@ -41,9 +41,6 @@ def login():
         table_hash_pass = data_handler.get_hash_pass(username=username)
         if verify_password(password, table_hash_pass[0]['password']):
             session['username'] = username
-            # # return render_template('index.html')
-            # # jsonify({'success': 'Login was successful'})
-            # return redirect(url_for('login'))
     except:
         return jsonify({'error': 'Wrong username or password'})
     return render_template('index.html')
