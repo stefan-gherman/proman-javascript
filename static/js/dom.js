@@ -71,7 +71,7 @@ export let dom = {
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
 
         const boardExpandButton = document.getElementsByTagName('button');
-        console.log(boardExpandButton);
+
 
 
 
@@ -85,11 +85,8 @@ export let dom = {
                 boardBody.innerHTML = '';
                 for (let element of response) {
                     createAppend(element);
-                    console.log('Enter fetch');
                     let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
-                    console.log('Before JSON');
                     columnResponse = await columnResponse.json();
-                    console.log('After fetch');
                     let columnBody = document.getElementById(`column_tr_${element.id}`);
                     columnBody.innerHTML = '';
                     columnBody.innerText = element.title;
@@ -97,11 +94,16 @@ export let dom = {
                         createAppendCard(card);
                     }
 
-                     if (checkIfObjectInArray(element, statusesDraggable) === false){
-                        statusesDraggable.push(element);
+                     if (checkIfObjectInArray(columnBody, statusesDraggable) === false){
+                        statusesDraggable.push(columnBody);
+                        console.log(columnBody);
+                        console.log(typeof columnBody);
                 }
                 }
                 console.log(statusesDraggable);
+               let drake = dragula(statusesDraggable).on('start', function() {
+                    console.log('It works');
+                });
                 console.log(`Board event ${this.id} expanded`);
             });
         }
