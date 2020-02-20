@@ -359,6 +359,7 @@ function handleNewCardClick(event) {
         },
         body: JSON.stringify(data)
     };
-    fetch('http://localhost:5000/api/create-card', options);
+    fetch('http://localhost:5000/api/create-card', options).then(() => location.reload());
+    fetch(`${window.origin}/`);
 }
 

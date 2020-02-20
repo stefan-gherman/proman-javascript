@@ -6,8 +6,10 @@ from flask_cors import CORS
 import data_handler
 import util
 
+
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.secret_key = util.random_key()
 
 
@@ -123,6 +125,7 @@ def create_card():
     card_title = request.json['card_title']
     status_id = data_handler.get_first_status_id_for_board(board_id)
     data_handler.create_card(card_title, board_id, status_id)
+    return make_response('ssttrriinngg', 200)
 
 
 @app.route('/logout')
