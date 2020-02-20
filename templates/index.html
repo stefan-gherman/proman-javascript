@@ -79,11 +79,14 @@
 <!-- PlaceHolder for register modal -->
 <div id="register-modal"></div>
 
-
-<h1>ProMan</h1>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalNewBoard" id="newBoardButton">
-    Add New Board
-</button>
+<div class="container">
+    <div id="topnav" class="navbar navbar-light bg-light">
+        <h1>ProMan</h1>
+        <button type="button" class="btn btn-light rounded border-secondary" data-toggle="modal" data-target="#exampleModalNewBoard" id="newBoardButton">
+            + New Board
+        </button>
+    </div>
+</div>
 
 <div class="modal fade" id="exampleModalNewBoard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
@@ -112,7 +115,7 @@
         </div>
     </div>
 </div>
-<div id="boards">Boards are loading...</div>
+<div id="boards"></div>
 
 
 
