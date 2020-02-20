@@ -225,6 +225,8 @@ function refreshloginModal(){
     submitLogin.addEventListener('click', function(){
        location.reload();
     });
+
+
 }
 
 
