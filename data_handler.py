@@ -91,6 +91,7 @@ def create_new_board(cursor, board_title, owner_public='public'):
 def add_new_status(cursor, status_title, border_id):
     query = "INSERT INTO statuses (title, board_id) VALUES (%s, %s);"
     cursor.execute(query, (status_title, int(border_id)))
+    print('new status added')
 
 
 @persistence.connection_handler

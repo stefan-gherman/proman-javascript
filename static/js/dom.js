@@ -198,6 +198,7 @@ function createAppend(element) {
 
 function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.status_id}`);
+    if (columnBody) {
     let cardBody = document.createElement('div');
     cardBody.setAttribute('class', 'col-md');
     cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
@@ -207,6 +208,7 @@ function createAppendCard(element) {
     cardBody.setAttribute('data-order', element['column_order']);
     cardBody.innerText += `${element.title}`;
     columnBody.appendChild(cardBody);
+    }
 }
 
 const insertObjectInArray = (elem, arr) => {
@@ -244,7 +246,7 @@ function handleNewColumnclick(event) {
     // console.log(input);
     for (let input of inputsColumnName) {
         input.addEventListener('change', function (event) {
-            console.log(event.target.value);
+            console.log('input value', event.target.value);
             let status_title = event.target.value;
             let data = {board_id, status_title};
             const options = {
