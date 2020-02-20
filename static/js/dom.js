@@ -252,31 +252,159 @@ function createAppendCard(element) {
 
 }
 
+
+export function createRegisterModal() {
+    let registerModal = `
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="register">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username"
+                               placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <div id="errorAlert" class="alert alert-danger" role="alert" style="display: none"></div>
+                    <div id="successAlert" class="alert alert-success" role="alert" style="display: none"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    `;
+    document.querySelector('#register-modal').innerHTML = registerModal;
+}
+
+
+export function createLoginModal() {
+    let loginModal = `
+    <!-- Modal Login-->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="login">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username-login"
+                               placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password-login" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submit-login" >Submit</button>
+                    <div id="errorAlert-login" class="alert alert-danger" role="alert" style="display: none"></div>
+                    <div id="successAlert-login" class="alert alert-success" role="alert" style="display: none">Logged in</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    `
+    document.querySelector('#login-modal').innerHTML = loginModal;
+    refreshloginModal();
+}
+
+
+function refreshloginModal(){
+    let submitLogin = document.querySelector('#close-login');
+    submitLogin.addEventListener('click', function(){
+       location.reload();
+    });
+}
+
 const insertObjectInArray = (elem, arr) => {
 
-    // console.log('element compared',elem);
-    // console.log('arr elems', arr[0]);
-    let search = 0;
-    let pos;
-    if (arr.length === 0) {
-        arr.push(elem);
-    }
-    for (let el of arr) {
+    // console.log('element compared',elem);$(document).ready(function () {
+    $('#register').on('submit', function (event) {
+        $.ajax({
+            data: {
+                username: $('#username').val(),
+                password: $('#password').val()
+            },
+            type: 'POST',
+            url: ('/register')
+        }).done(function (data) {
 
-        if (elem.id != el.id) {
-            search += 1;
-        } else {
-            pos = arr.indexOf(el)
-        }
-    }
-    if (search === arr.length) {
-        arr.push(elem);
-    } else {
-        arr.splice(pos, 1);
-        arr.push(elem);
-    }
-
+            if (data.error) {
+                $('#errorAlert').text(data.error).show();
+                $('#successAlert').hide();
+            } else {
+                $('#successAlert').text(data.success).show();
+                $('#errorAlert').hide();
+            }
+        });
+        event.preventDefault();
+    });
 };
+
+
+$(document).ready(function () {
+    $('#login').on('submit', function (event) {
+        $.ajax({
+            data: {
+                username: $('#username-login').val(),
+                password: $('#password-login').val()
+            },
+            type: 'POST',
+            url: ('/login')
+        }).done(function (data) {
+            if (data.error) {
+                $('#errorAlert-login').text(data.error).show();
+                $('#successAlert-login').hide();
+            } else {
+                $('#successAlert-login').text(data.success).show();
+                $('#errorAlert-login').hide();
+            }
+
+        });
+
+        event.preventDefault();
+    });
+});
+    // console.log('arr elems', arr[0]);
+//     let search = 0;
+//     let pos;
+//     if (arr.length === 0) {
+//         arr.push(elem);
+//     }
+//     for (let el of arr) {
+//
+//         if (elem.id != el.id) {
+//             search += 1;
+//         } else {
+//             pos = arr.indexOf(el)
+//         }
+//     }
+//     if (search === arr.length) {
+//         arr.push(elem);
+//     } else {
+//         arr.splice(pos, 1);
+//         arr.push(elem);
+//     }
+//
+// }
 
 
 //     let columnBody = document.getElementById(`column_tr_${element.id}`);

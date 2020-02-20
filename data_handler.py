@@ -65,6 +65,17 @@ def get_cards_for_status(cursor, status_id):
     return result
 
 
+# Save username and password in db
+@persistence.connection_handler
+def save_credentials(cursor, username, password):
+    cursor.execute(
+        sql.SQL("INSERT INTO {table} (username, password) VALUES(%s, %s)").format(
+            table=sql.Identifier('users'),
+            col1=sql.Identifier('username'),
+            col2=sql.Identifier('password')
+        ), [username, password])
+
+
 @persistence.connection_handler
 def insert_new_ordered_cards(cursor, card_id, board_id, status_id, column_order):
     cursor.execute(
@@ -77,6 +88,21 @@ def insert_new_ordered_cards(cursor, card_id, board_id, status_id, column_order)
             id=sql.Identifier('id')
         ), [board_id, status_id, column_order, card_id]
     )
+
+
+@persistence.connection_handler
+def get_hash_pass(cursor, username):
+    cursor.execute(
+        sql.SQL('SELECT {col2} FROM {table} WHERE {col1} = %s').format(
+            col1=sql.Identifier('username'),
+            col2=sql.Identifier('password'),
+            table=sql.Identifier('users')
+        ), [username]
+
+    )
+
+    result = cursor.fetchall()
+    return result
 
 
 @persistence.connection_handler
