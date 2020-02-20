@@ -65,12 +65,9 @@ def create_new_board():
 
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
-    print('rq    ', request)
     board_id = request.json['board_id']
-    print('py board id ', board_id)
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
-    print('db done')
     return redirect("/")
 
 
@@ -127,6 +124,19 @@ def create_card():
     status_id = data_handler.get_first_status_id_for_board(board_id)
     data_handler.create_card(card_title, board_id, status_id)
     return make_response('ssttrriinngg', 200)
+
+
+@app.route('/api/board-first-status/<board_id>')
+@json_response
+def api_board_first_status(board_id):
+    first_status_id = data_handler.get_first_status_id_for_board(board_id)
+    last_card_id = data_handler.get_status_last_card_id(first_status_id)
+    last_card_order = data_handler.get_status_last_card_order(first_status_id)
+    if not last_card_id:
+        last_card_id = 0
+    if not last_card_order:
+        last_card_order = 0
+    return {'first_status_id': first_status_id, 'last_card_id': last_card_id, 'last_card_order': last_card_order}
 
 
 @app.route('/logout')
