@@ -29,46 +29,39 @@ export let dom = {
             boardList += `
                <div>
                     <p>
-                        <div class="navbar navbar-light bg-light rounded">
+                        <div class="navbar navbar-light bg-light rounded border">
                             <div class="d-flex flex-row">
                               <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}"  role="button" aria-expanded="false" aria-controls="collapseExample">
                                 ${board.title}
                               </a>
-                              <button type="button" class="btn btn-light rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
-
+                              <button type="button" class="btn btn-light mr-1 rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
+                              <button id="buttonNewStatusForBoard${board.id}" class="btn btn-light mr-1 rounded border-secondary" data-toggle="collapse" href="#collapseExampleInput${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                + New Status
+                              </button>  
                             </div>
                             <button id ="board_${board.id}" class="btn btn-light rounded border-secondary" type="button" data-toggle="collapse" data-target="#collapseExample${board.id}" aria-expanded="false" aria-controls="collapseExample">
                                 v
                             </button>
                         </div>
                     </p>
-                    <div>
-                    <button id="buttonNewStatusForBoard${board.id}" class="btn btn-light rounded border-secondary" data-toggle="collapse" href="#collapseExampleInput${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    + New Column
-                    </button>
+                    <div>     
                       <div class="collapse inputClass" id="collapseExampleInput${board.id}">
                         <input type="text" class="inputId" placeholder="Add new Status">
                     </div>
                     <div class="collapse" id="collapseExample${board.id}">
-                    
                       <div class="card card-body container " >
-                      <div class="container-fluid">
-                      <div class="row" id="${board.id}">
-                      
-                        
+                        <div class="container-fluid">
+                            <div class="row" id="${board.id}">
+                            </div>
                         </div>
-                      </div>
                      </div>
-                     
-                </div>
-            
-`;
-
+                </div>  
+        `;
         }
 
         const outerHtml = `
 
-            <ul  class="board-container">
+            <ul class="container">
                 ${boardList}
             </ul>
           
