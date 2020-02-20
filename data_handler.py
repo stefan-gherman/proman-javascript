@@ -30,7 +30,6 @@ def get_boards(cursor):
     return result
 
 
-
 def get_cards_for_board(board_id):
     persistence.clear_cache()
     all_cards = persistence.get_cards()
@@ -57,11 +56,24 @@ def get_statuses_for_board(cursor, board_id):
 @persistence.connection_handler
 def get_cards_for_status(cursor, status_id):
     cursor.execute(
-        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = %s;')
+        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = %s ORDER BY cards.column_order;')
             .format(
         ), [status_id]
     )
 
     result = cursor.fetchall()
-    print(result)
     return result
+
+
+@persistence.connection_handler
+def insert_new_ordered_cards(cursor, card_id, board_id, status_id, column_order):
+    cursor.execute(
+        sql.SQL('UPDATE {cards} SET {board_id} = (%s), {status_id} = (%s), {column_order} = (%s) WHERE {id} = (%s);')
+            .format(
+            cards=sql.Identifier('cards'),
+            board_id=sql.Identifier('board_id'),
+            status_id=sql.Identifier('status_id'),
+            column_order=sql.Identifier('column_order'),
+            id=sql.Identifier('id')
+        ), [board_id, status_id, column_order, card_id]
+    )

@@ -73,16 +73,15 @@ export let dom = {
         const boardExpandButton = document.getElementsByTagName('button');
 
 
-
-
         for (let button of boardExpandButton) {
             button.addEventListener('click', async function (event) {
                 let idForBoard = button.id.slice(6);
                 let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
                 response = await response.json();
-                console.log(response);
-                let boardBody = document.getElementById(`${idForBoard}`)
+                //console.log(response);
+                let boardBody = document.getElementById(`${idForBoard}`);
                 boardBody.innerHTML = '';
+
                 for (let element of response) {
                     createAppend(element);
                     let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
@@ -91,18 +90,63 @@ export let dom = {
                     columnBody.innerHTML = '';
                     columnBody.innerText = element.title;
                     for (let card of columnResponse) {
+                        // console.log(card);
                         createAppendCard(card);
                     }
 
-                     if (checkIfObjectInArray(columnBody, statusesDraggable) === false){
-                        statusesDraggable.push(columnBody);
-                        console.log(columnBody);
-                        console.log(typeof columnBody);
-                }
+                    insertObjectInArray(columnBody, statusesDraggable);
+
                 }
                 console.log(statusesDraggable);
-               let drake = dragula(statusesDraggable).on('start', function() {
-                    console.log('It works');
+                let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
+                    el.dataset.card = target.id;
+                    el.dataset.board = target.dataset.board;
+                    let i = 0;
+                    if (source.length > 0) {
+                        for (let child of source.children) {
+
+                            child.dataset.order = i;
+                            i += 1;
+                            console.log(child, 'from source');
+                            let dataToSend = {
+                                status_id: child.dataset.card.slice(-1)[0],
+                                board_id: child.dataset.board,
+                                column_order: child.dataset.order,
+                                id: child.id.slice(5)
+                            };
+                            fetch(`${window.origin}/move`, {
+                                method: 'POST',
+                                credentials: "include",
+                                cache: "no-cache",
+                                headers: new Headers({
+                                    'content-type': 'application/json'
+                                }),
+                                body: JSON.stringify(dataToSend)
+                            });
+                        }
+                    }
+                    i = 0;
+                    for (let child of target.children) {
+                        child.dataset.order = i;
+                        i += 1;
+                        console.log(child, 'from target');
+                         let dataToSend = {
+                            status_id:child.dataset.card.slice(-1)[0],
+                            board_id:child.dataset.board,
+                            column_order:child.dataset.order,
+                            id: child.id.slice(5)
+                        };
+                        fetch(`${window.origin}/move`, {
+                            method: 'POST',
+                            credentials: "include",
+                            cache: "no-cache",
+                            headers: new Headers({
+                                'content-type': 'application/json'
+                            }),
+                            body: JSON.stringify(dataToSend)
+                        });
+                    }
+
                 });
                 console.log(`Board event ${this.id} expanded`);
             });
@@ -130,6 +174,7 @@ function createAppend(element) {
     // column.setAttribute('style', 'display: block;')
     column.setAttribute('id', `column_${element.id}`);
     column.setAttribute('id', `column_tr_${element.id}`);
+    column.setAttribute('data-board', element.board_id);
     column.innerText = `test ${element.title}`;
     boardBody.appendChild(column);
     // boardBody.appendChild(column_tr);
@@ -138,24 +183,40 @@ function createAppend(element) {
 
 function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.id}`);
-    let card = document.createElement('div');
-    card.setAttribute('class', 'col-md');
-    card.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-    card.setAttribute('id', `card_${element.id}`);
-    card.innerText += `${element.title}`;
-    columnBody.appendChild(card);
+    let cardBody = document.createElement('div');
+    cardBody.setAttribute('class', 'col-md');
+    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+    cardBody.setAttribute('id', `card_${element.id}`);
+    cardBody.setAttribute('data-card', `${columnBody.id}`);
+    cardBody.setAttribute('data-board', columnBody.dataset.board);
+    cardBody.setAttribute('data-order', element['column_order']);
+    cardBody.innerText += `${element.title}`;
+    columnBody.appendChild(cardBody);
 
 }
 
-const checkIfObjectInArray = (elem, array) => {
+const insertObjectInArray = (elem, arr) => {
 
-    for(let el of array){
-
-        if(_.isEqual(elem, el) === true){
-            return true;
-        }
-
+    // console.log('element compared',elem);
+    // console.log('arr elems', arr[0]);
+    let search = 0;
+    let pos;
+    if (arr.length === 0) {
+        arr.push(elem);
     }
-    return false;
+    for (let el of arr) {
+
+        if (elem.id != el.id) {
+            search += 1;
+        } else {
+            pos = arr.indexOf(el)
+        }
+    }
+    if (search === arr.length) {
+        arr.push(elem);
+    } else {
+        arr.splice(pos, 1);
+        arr.push(elem);
+    }
 
 }

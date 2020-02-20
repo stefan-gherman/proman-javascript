@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, make_response, request, jsonify, redirect
 from util import json_response
 
 import data_handler
@@ -43,6 +43,21 @@ def get_statuses_for_board(board_id):
 @json_response
 def get_cards_for_status(status_id):
     return data_handler.get_cards_for_status(status_id)
+
+
+@app.route('/move', methods=['POST'])
+def reorder_cards():
+    req = request.get_json()
+    print(req)
+    card_id = int(req['id'])
+    board_id = int(req['board_id'])
+    status_id = int(req['status_id'])
+    column_order = int(req['column_order'])
+
+    print(card_id, board_id, status_id, column_order)
+    data_handler.insert_new_ordered_cards(card_id, board_id, status_id, column_order)
+    return make_response('OK', 200)
+
 
 def main():
     app.run(debug=True)
