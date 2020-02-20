@@ -46,6 +46,7 @@ INSERT INTO  statuses(title, board_id) VALUES('testing', 3);
 
 
 INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'new card 1', 1, 0);
+
 INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'new card 2', 2, 0);
 INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'in progress card', 3, 0);
 INSERT INTO cards(board_id, title, status_id, column_order) VALUES (1, 'planning', 4, 0);
@@ -65,6 +66,7 @@ CREATE TABLE users (
     password varchar(100),
     register_time timestamp DEFAULT now()
 );
+
 
 
 

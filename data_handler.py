@@ -77,3 +77,37 @@ def insert_new_ordered_cards(cursor, card_id, board_id, status_id, column_order)
             id=sql.Identifier('id')
         ), [board_id, status_id, column_order, card_id]
     )
+
+
+@persistence.connection_handler
+def get_first_status_id_for_board(cursor, board_id):
+    cursor.execute(f"""
+        SELECT id FROM statuses WHERE board_id = {board_id}
+        ORDER BY id ASC;
+""")
+    result = cursor.fetchone()
+    return result['id']
+
+
+@persistence.connection_handler
+def create_card(cursor, card_title, board_id, status_id):
+    cursor.execute(f"""
+        INSERT INTO cards (title, board_id, status_id)
+        VALUES ('{card_title}', {board_id}, {status_id});
+""")
+
+@persistence.connection_handler
+def create_new_board(cursor, board_title, owner_public='public'):
+    cursor.execute(f'''
+        INSERT INTO boards (title, owner)
+        VALUES ('{board_title}','{owner_public}');
+''')
+
+
+@persistence.connection_handler
+def add_new_status(cursor, status_title, border_id):
+    query = "INSERT INTO statuses (title, board_id) VALUES (%s, %s);"
+    cursor.execute(query, (status_title, int(border_id)))
+
+
+
