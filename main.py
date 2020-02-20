@@ -44,12 +44,20 @@ def get_statuses_for_board(board_id):
 def get_cards_for_status(status_id):
     return data_handler.get_cards_for_status(status_id)
 
+
+@app.route("/api/create-board", methods=['GET','POST'])
+def create_new_board():
+    board_title = request.form['board-title']
+    data_handler.create_new_board(board_title)
+    return redirect(url_for('index'))
+
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
     board_id = request.json['board_id']
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
     return redirect("/")
+
 
 def main():
     app.run(debug=True)

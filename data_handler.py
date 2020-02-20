@@ -67,6 +67,15 @@ def get_cards_for_status(cursor, status_id):
 
 
 @persistence.connection_handler
+def create_new_board(cursor, board_title, owner_public='public'):
+    cursor.execute(f'''
+        INSERT INTO boards (title, owner)
+        VALUES ('{board_title}','{owner_public}');
+''')
+
+
+@persistence.connection_handler
 def add_new_status(cursor, status_title, border_id):
     query = "INSERT INTO statuses (title, board_id) VALUES (%s, %s);"
     cursor.execute(query, (status_title, int(border_id)))
+
