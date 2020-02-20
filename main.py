@@ -2,10 +2,8 @@ from flask import Flask, render_template, url_for, request, jsonify, escape, ses
 from util import json_response, hash_password, verify_password
 from flask_cors import CORS
 
-
 import data_handler
 import util
-
 
 app = Flask(__name__)
 # CORS(app)
@@ -115,7 +113,7 @@ def login():
         if verify_password(password, table_hash_pass[0]['password']):
             session['username'] = username
     except:
-        return jsonify({'error': 'Wrong username or password'})
+        return jsonify({'error': 'Invalid username or password.'})
     return render_template('index.html')
 
 

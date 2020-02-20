@@ -23,6 +23,10 @@ $(document).ready(function () {
     });
 });
 
+$('#login-modal').on('hidden.bs.modal', function () {
+ location.reload();
+})
+
 
 
 

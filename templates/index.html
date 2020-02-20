@@ -28,14 +28,14 @@
 
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Proman</a>
+<!--        <a class="navbar-brand" href="#">Proman</a>-->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" id="nav1">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+<!--                <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>-->
                 <!-- Modal Button Register-->
                 <button type="button" class="btn" data-toggle="modal" data-target="#exampleModal" id="nav2">
                     Register
@@ -51,21 +51,23 @@
 
 {% else %}
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Proman</a>
+<!--        <a class="navbar-brand" href="#">Proman</a>-->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" id="nav1">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+<!--                <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>-->
+                <span class="btn">{{ logged_in }}</span>
                 <a href="/logout"><button type="button" class="btn " data-toggle="modal" data-target="#loginModal" id="nav2">
                     Logout
                 </button></a>
+
             </div>
         </div>
     </nav>
-    <div> Welcome {{ logged_in }}</div>
+
 
 
 
