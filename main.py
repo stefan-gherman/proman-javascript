@@ -59,6 +59,13 @@ def reorder_cards():
     return make_response('OK', 200)
 
 
+@app.route("/api/create-board", methods=['GET', 'POST'])
+def create_new_board():
+    board_title = request.form['board-title']
+    data_handler.create_new_board(board_title)
+    return redirect(url_for('index'))
+
+
 def main():
     app.run(debug=True)
 

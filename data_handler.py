@@ -77,3 +77,10 @@ def insert_new_ordered_cards(cursor, card_id, board_id, status_id, column_order)
             id=sql.Identifier('id')
         ), [board_id, status_id, column_order, card_id]
     )
+
+@persistence.connection_handler
+def create_new_board(cursor, board_title, owner_public='public'):
+    cursor.execute(f'''
+        INSERT INTO boards (title, owner)
+        VALUES ('{board_title}','{owner_public}');
+''')
