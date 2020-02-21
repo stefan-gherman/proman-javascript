@@ -6,7 +6,7 @@ import data_handler
 import util
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.secret_key = util.random_key()
 
