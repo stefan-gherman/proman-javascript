@@ -7,7 +7,7 @@ import util
 
 app = Flask(__name__)
 # CORS(app)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.secret_key = util.random_key()
 
 
@@ -129,16 +129,13 @@ def create_card():
         print('Tried new card without status.')
         return make_response('SOmething went wrong', 500)
 
+
 @app.route('/api/board-first-status/<board_id>')
 @json_response
 def api_board_first_status(board_id):
     first_status_id = data_handler.get_first_status_id_for_board(board_id)
     last_card_id = data_handler.get_status_last_card_id(first_status_id)
     last_card_order = data_handler.get_status_last_card_order(first_status_id)
-    if not last_card_id:
-        last_card_id = 0
-    if not last_card_order:
-        last_card_order = 0
     return {'first_status_id': first_status_id, 'last_card_id': last_card_id, 'last_card_order': last_card_order}
 
 

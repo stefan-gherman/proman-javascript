@@ -137,6 +137,8 @@ def get_status_last_card_id(cursor, first_status_id):
         ORDER BY column_order DESC;
 """)
     result = cursor.fetchone()
+    if result is None:
+        return 0
     return result['id']
 
 
@@ -147,6 +149,8 @@ def get_status_last_card_order(cursor, first_status_id):
         ORDER BY column_order DESC;
 """)
     result = cursor.fetchone()
+    if result is None:
+        return 0
     return result['column_order']
 
 
