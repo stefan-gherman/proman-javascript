@@ -119,12 +119,15 @@ def login():
 
 @app.route('/api/create-card', methods=['POST'])
 def create_card():
-    board_id = request.json['board_id']
-    card_title = request.json['card_title']
-    status_id = data_handler.get_first_status_id_for_board(board_id)
-    data_handler.create_card(card_title, board_id, status_id)
-    return make_response('ssttrriinngg', 200)
-
+    try:
+        board_id = request.json['board_id']
+        card_title = request.json['card_title']
+        status_id = data_handler.get_first_status_id_for_board(board_id)
+        data_handler.create_card(card_title, board_id, status_id)
+        return make_response('ssttrriinngg', 200)
+    except:
+        print('Tried new card without status.')
+        return make_response('SOmething went wrong', 500)
 
 @app.route('/api/board-first-status/<board_id>')
 @json_response
