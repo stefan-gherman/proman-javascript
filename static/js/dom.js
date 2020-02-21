@@ -239,7 +239,7 @@ const insertObjectInArray = (elem, arr) => {
 
 function handleNewColumnclick(event) {
     //console.clear()
-    let board_id = event.target.id.slice(-1);
+    let board_id = event.target.id.slice(23);
     let inputsColumnName = document.querySelectorAll("input");
     // let status_title;
 
@@ -251,6 +251,7 @@ function handleNewColumnclick(event) {
             let data = {board_id, status_title};
             const options = {
                 method: 'POST',
+                // mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -354,9 +355,9 @@ function handleNewCardClick(event) {
         },
         body: JSON.stringify(data)
     };
-    fetch('http://localhost:5000/api/create-card', options);
+    fetch('http://127.0.0.1:5000/api/create-card', options);
     // Artificial temporary visual update, must change before card edit
-    fetch(`http://localhost:5000/api/board-first-status/${board_id}`)
+    fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
         .then(response => response.json())
         .then(function(data) {
         console.log('data ', data);
