@@ -378,17 +378,22 @@ function handleNewCardClick(event) {
 }
 
 function markCardsForClickRename() {
-    let allCards = document.getElementsByClassName("col-md")
+    let allCards = document.getElementsByClassName("col-md");
     console.log('cards= ', allCards);
     for (let card of allCards) {
         if (card.id.includes('card_')) {
-            card.addEventListener('click', handleCardClickRename)
-            card.addEventListener('keydown', handleCardRenameKeyPressed)
+            card.addEventListener('click', handleCardClickRename);
+            card.addEventListener('keydown', handleCardRenameKeyPressed);
+            card.addEventListener('change', handleCardRenameChange)
         }
     }
 
 
 
+}
+
+function handleCardRenameChange(event) {
+    event.currentTarget.innerHTML = event.target.defaultValue;
 }
 
 function handleCardClickRename(event) {
@@ -420,6 +425,8 @@ function handleCardRenameKeyPressed(event) {
         body: JSON.stringify(data)
         };
         fetch(`http://127.0.0.1:5000/api/rename-card/${cardId}`, options);
-        
+    }
+    else if (event.which == 27 || event.keyCode == 27) {
+        event.currentTarget.innerHTML = event.target.defaultValue;
     }
 }
