@@ -1,5 +1,6 @@
 import {dom} from "./dom.js";
-import {createRegisterModal, createLoginModal} from "./dom.js";
+import {createRegisterModal, createLoginModal, renameModal} from "./dom.js";
+
 
 
 // This function is to initialize the application
@@ -18,3 +19,5 @@ createRegisterModal();
 
 // calling login modal
 createLoginModal();
+
+renameModal();

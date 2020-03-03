@@ -1,7 +1,7 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
 
-
+let triggered = false;
 let statusesDraggable = [];
 export let dom = {
     init: function () {
@@ -103,10 +103,35 @@ export let dom = {
                         let title = document.createElement('p');
                         title.setAttribute('id', `title_board${element.id}`);
                         title.innerText = `${element.title}`;
-                        title.addEventListener('click', function(event){
-                           console.log(title.innerHTML);
+                        title.setAttribute('style', 'cursor:pointer;');
+                        title.setAttribute('contenteditable', 'true');
+                        title.addEventListener('focusout', function (event) {
+
+                            console.log(title.innerText);
+                            const value = title.innerText;
+
+                            const status_id = title.id.slice(11);
+
+                            const dataToSend = {
+                                value: value,
+                                status_id: status_id
+                            };
+
+                            fetch(`${window.origin}/update-statuses`, {
+                                method: 'POST',
+                                credentials: "include",
+                                cache: "no-cache",
+                                headers: new Headers({
+                                    'content-type': 'application/json'
+                                }),
+                                body: JSON.stringify(dataToSend)
+                            });
+
                         });
+
+
                         columnBody.appendChild(title);
+
                         for (let card of columnResponse) {
                             // console.log(card);
                             createAppendCard(card);
@@ -345,6 +370,28 @@ function refreshloginModal() {
     submitLogin.addEventListener('click', function () {
         location.reload();
     });
+}
+
+export function renameModal() {
+    let renameModal = `<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Rename Column</h5>
+                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+        </div>
+    </div>
+</div>`
+
+    renameModal = document.createRange().createContextualFragment(renameModal)
+    document.body.appendChild(renameModal);
 }
 
 function handleNewCardClick(event) {
