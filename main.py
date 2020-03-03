@@ -62,6 +62,12 @@ def create_new_board():
     data_handler.create_new_board(board_title)
     return redirect(url_for('index'))
 
+@app.route("/api/create-private-board", methods=['GET', 'POST'])
+def create_private_new_board():
+    private_board_title = request.form['private-board-title']
+    data_handler.create_private_new_board(private_board_title)
+    return redirect(url_for('index'))
+
 
 @app.route('/api/create-status', methods=['POST'])
 def create_status():

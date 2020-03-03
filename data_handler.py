@@ -86,6 +86,13 @@ def create_new_board(cursor, board_title, owner_public='public'):
         VALUES ('{board_title}','{owner_public}');
 ''')
 
+@persistence.connection_handler
+def create_private_new_board(cursor, board_title, owner_public='private'):
+    cursor.execute(f'''
+        INSERT INTO boards (title, owner)
+        VALUES ('{board_title}','{owner_public}');
+''')
+
 
 @persistence.connection_handler
 def add_new_status(cursor, status_title, border_id):
