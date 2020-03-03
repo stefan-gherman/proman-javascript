@@ -80,11 +80,9 @@ export let dom = {
                 // console.log('entered if ');
                 button.addEventListener('click', handleNewColumnclick);
 
-            }
-            else if (button.id.includes('nav')) {
+            } else if (button.id.includes('nav')) {
                 console.log('skipped nav buttons');
-            }
-            else {
+            } else {
                 button.addEventListener('click', async function (event) {
                     let idForBoard = button.id.slice(6);
                     console.log('idb', idForBoard);
@@ -102,7 +100,13 @@ export let dom = {
                         columnResponse = await columnResponse.json();
                         let columnBody = document.getElementById(`column_tr_${element.id}`);
                         columnBody.innerHTML = '';
-                        columnBody.innerText = element.title;
+                        let title = document.createElement('p');
+                        title.setAttribute('id', `title_board${element.id}`);
+                        title.innerText = `${element.title}`;
+                        title.addEventListener('click', function(event){
+                           console.log(title.innerHTML);
+                        });
+                        columnBody.appendChild(title);
                         for (let card of columnResponse) {
                             // console.log(card);
                             createAppendCard(card);
@@ -190,7 +194,6 @@ function createAppend(element) {
     column.setAttribute('id', `column_${element.id}`);
     column.setAttribute('id', `column_tr_${element.id}`);
     column.setAttribute('data-board', element.board_id);
-    column.innerText = `test ${element.title}`;
     boardBody.appendChild(column);
     // boardBody.appendChild(column_tr);
 
@@ -199,15 +202,15 @@ function createAppend(element) {
 function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.status_id}`);
     if (columnBody) {
-    let cardBody = document.createElement('div');
-    cardBody.setAttribute('class', 'col-md');
-    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-    cardBody.setAttribute('id', `card_${element.id}`);
-    cardBody.setAttribute('data-card', `${columnBody.id}`);
-    cardBody.setAttribute('data-board', columnBody.dataset.board);
-    cardBody.setAttribute('data-order', element['column_order']);
-    cardBody.innerText += `${element.title}`;
-    columnBody.appendChild(cardBody);
+        let cardBody = document.createElement('div');
+        cardBody.setAttribute('class', 'col-md');
+        cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+        cardBody.setAttribute('id', `card_${element.id}`);
+        cardBody.setAttribute('data-card', `${columnBody.id}`);
+        cardBody.setAttribute('data-board', columnBody.dataset.board);
+        cardBody.setAttribute('data-order', element['column_order']);
+        cardBody.innerText += `${element.title}`;
+        columnBody.appendChild(cardBody);
     }
 }
 
@@ -359,19 +362,19 @@ function handleNewCardClick(event) {
     // Artificial temporary visual update, must change before card edit
     fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
         .then(response => response.json())
-        .then(function(data) {
-        console.log('data ', data);
-        let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
-        let tempCard = document.createElement('div');
-        tempCard.setAttribute('class', 'col-md');
-        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-        tempCard.setAttribute('id', `card_${data.last_card_id}`);
-        tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-        tempCard.setAttribute('data-board', `${board_id}`);
-        tempCard.setAttribute('data-order', `${data.last_card_order}`);
-        tempCard.innerText += `${card_title}`;
-        console.log('temp card     ', tempCard);
-        tempColumn.appendChild(tempCard);
-    });
+        .then(function (data) {
+            console.log('data ', data);
+            let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
+            let tempCard = document.createElement('div');
+            tempCard.setAttribute('class', 'col-md');
+            tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+            tempCard.setAttribute('id', `card_${data.last_card_id}`);
+            tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+            tempCard.setAttribute('data-board', `${board_id}`);
+            tempCard.setAttribute('data-order', `${data.last_card_order}`);
+            tempCard.innerText += `${card_title}`;
+            console.log('temp card     ', tempCard);
+            tempColumn.appendChild(tempCard);
+        });
 }
 
