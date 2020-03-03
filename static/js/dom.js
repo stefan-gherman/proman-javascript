@@ -111,6 +111,7 @@ export let dom = {
                         insertObjectInArray(columnBody, statusesDraggable);
 
                     }
+                    markCardsForClickRename();
                     console.log(statusesDraggable);
                     let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
                         el.dataset.card = target.id;
@@ -166,6 +167,7 @@ export let dom = {
                 });
             }
         }
+
 
     },
     loadCards: function (boardId) {
@@ -375,3 +377,49 @@ function handleNewCardClick(event) {
     });
 }
 
+function markCardsForClickRename() {
+    let allCards = document.getElementsByClassName("col-md")
+    console.log('cards= ', allCards);
+    for (let card of allCards) {
+        if (card.id.includes('card_')) {
+            card.addEventListener('click', handleCardClickRename)
+            card.addEventListener('keydown', handleCardRenameKeyPressed)
+        }
+    }
+
+
+
+}
+
+function handleCardClickRename(event) {
+    console.log('entered card click rename');
+    console.log('click rename event:', event.toElement.innerHTML);
+    event.toElement.innerHTML = `
+            <input type="text" value="${event.toElement.innerHTML}">
+    `;
+
+}
+
+function handleCardRenameKeyPressed(event) {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.target.defaultValue = event.target.value;
+        console.log(event.target.value);
+        console.log(event.target);
+        let tempValue = event.target.value;
+        event.currentTarget.innerHTML = tempValue;
+        console.log('post replacement ', event.target);
+        let cardId = event.currentTarget.id.slice(5)
+        console.log('parent_id card id ', event.currentTarget.id )
+        console.log(cardId);
+        let data = {cardId, tempValue};
+        const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/rename-card/${cardId}`, options);
+        
+    }
+}

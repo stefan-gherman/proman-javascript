@@ -160,3 +160,12 @@ def create_card(cursor, card_title, board_id, status_id):
         INSERT INTO cards (title, board_id, status_id)
         VALUES ('{card_title}', {board_id}, {status_id});
 """)
+
+
+@persistence.connection_handler
+def rename_card(cursor, card_id, new_title):
+    cursor.execute(f"""
+        UPDATE cards
+        SET title = '{new_title}'
+        WHERE id = {card_id};
+""")
