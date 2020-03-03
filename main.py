@@ -17,7 +17,10 @@ def get_boards():
     """
     All the boards
     """
-    return data_handler.get_boards()
+    logged_in = None
+    if 'username' in session:
+        logged_in = session['username']
+    return data_handler.get_boards(logged_in)
 
 
 # @app.route("/get-cards/<int:board_id>")
@@ -64,8 +67,11 @@ def create_new_board():
 
 @app.route("/api/create-private-board", methods=['GET', 'POST'])
 def create_private_new_board():
+    logged_in = None
+    if 'username' in session:
+        logged_in = session['username']
     private_board_title = request.form['private-board-title']
-    data_handler.create_private_new_board(private_board_title)
+    data_handler.create_private_new_board(private_board_title, logged_in)
     return redirect(url_for('index'))
 
 
