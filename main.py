@@ -145,5 +145,14 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/update-statuses', methods=['POST'])
+def update_status_title():
+    req = request.get_json()
+    new_status_value = req['value']
+    status_id = int(req['status_id'])
+    data_handler.replace_status_column(status_id, new_status_value)
+    return make_response('Success', 200)
+
+
 if __name__ == '__main__':
     main()
