@@ -160,3 +160,14 @@ def create_card(cursor, card_title, board_id, status_id):
         INSERT INTO cards (title, board_id, status_id)
         VALUES ('{card_title}', {board_id}, {status_id});
 """)
+
+
+@persistence.connection_handler
+def replace_status_column(cursor, status_id, title):
+    cursor.execute(
+        sql.SQL("UPDATE {statuses} SET {title} = (%s) WHERE {id} = (%s);").format(
+            statuses=sql.Identifier('statuses'),
+            title=sql.Identifier('title'),
+            id=sql.Identifier('id')
+        ), [title, status_id]
+    )
