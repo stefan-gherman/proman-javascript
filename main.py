@@ -62,6 +62,11 @@ def create_new_board():
     data_handler.create_new_board(board_title)
     return redirect(url_for('index'))
 
+@app.route('/api/delete-board', methods=['POST'])
+def delete_board():
+    board_id = request.json['board_id']
+    data_handler.delete_board(board_id)
+    return redirect("/")
 
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
