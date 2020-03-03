@@ -68,6 +68,11 @@ def delete_board():
     data_handler.delete_board(board_id)
     return redirect("/")
 
+@app.route('/archive-card/<card_id>')
+def archive_cards(card_id):
+    data_handler.archive_cards(card_id)
+    return redirect("/")
+
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
     board_id = request.json['board_id']

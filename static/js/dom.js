@@ -200,6 +200,7 @@ function createAppend(element) {
 function createAppendCard(element) {
   let columnBody = document.getElementById(`column_tr_${element.status_id}`);
   if (columnBody) {
+    let btnArchive = `<a href="/archive-card/${element.id}"> Archive </a>`;
     let cardBody = document.createElement('div');
     cardBody.setAttribute('class', 'col-md');
     cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
@@ -207,7 +208,7 @@ function createAppendCard(element) {
     cardBody.setAttribute('data-card', `${columnBody.id}`);
     cardBody.setAttribute('data-board', columnBody.dataset.board);
     cardBody.setAttribute('data-order', element['column_order']);
-    cardBody.innerText += `${element.title}`;
+    cardBody.innerHTML += `${element.title} ${btnArchive}`;
     columnBody.appendChild(cardBody);
   }
 }
