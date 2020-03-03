@@ -201,7 +201,7 @@ function createAppendCard(element) {
     if (columnBody) {
     let cardBody = document.createElement('div');
     cardBody.setAttribute('class', 'col-md');
-    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
     cardBody.setAttribute('id', `card_${element.id}`);
     cardBody.setAttribute('data-card', `${columnBody.id}`);
     cardBody.setAttribute('data-board', columnBody.dataset.board);
@@ -364,7 +364,7 @@ function handleNewCardClick(event) {
         let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
         let tempCard = document.createElement('div');
         tempCard.setAttribute('class', 'col-md');
-        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
         tempCard.setAttribute('id', `card_${data.last_card_id}`);
         tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
         tempCard.setAttribute('data-board', `${board_id}`);

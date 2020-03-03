@@ -138,7 +138,7 @@ def get_status_last_card_id(cursor, first_status_id):
 """)
     result = cursor.fetchone()
     if result is None:
-        return 0
+        return 1
     return result['id']
 
 
