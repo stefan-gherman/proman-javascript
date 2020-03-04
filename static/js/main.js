@@ -1,5 +1,6 @@
 import {dom} from "./dom.js";
-import {createRegisterModal, createLoginModal} from "./dom.js";
+import {createRegisterModal, createLoginModal, renameModal} from "./dom.js";
+
 
 
 // This function is to initialize the application
@@ -23,6 +24,9 @@ createRegisterModal();
 createLoginModal();
 
 
+renameModal();
+
+
 function refreshBoards() {
     let boardsContainer = document.querySelector('#boards');
     boardsContainer.innerHTML='';
@@ -36,4 +40,5 @@ btnRefresh.addEventListener('click', function(){
     dom.loadBoards();
     // location.reload();
 });
+
 

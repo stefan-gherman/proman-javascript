@@ -1,7 +1,7 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
 
-
+let triggered = false;
 let statusesDraggable = [];
 export let dom = {
   init: function () {
@@ -69,6 +69,7 @@ export let dom = {
             </ul>
           
         `;
+
     
     let boardsContainer = document.querySelector('#boards');
     boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
@@ -185,35 +186,112 @@ export let dom = {
 };
 
 function createAppend(element) {
-  let boardBody = document.getElementById(`${element.board_id}`);
-  let column = document.createElement('div');
-  column.setAttribute('class', 'col-md text-center');
-  // let column_tr = document.createElement('p');
-  // column.setAttribute('class', 'col-sm');
-  column.setAttribute('style', 'margin:10px; border: 2px solid black; display: table');
-  // column.setAttribute('style', 'display: block;')
-  column.setAttribute('id', `column_${element.id}`);
-  column.setAttribute('id', `column_tr_${element.id}`);
-  column.setAttribute('data-board', element.board_id);
-  column.innerText = `test ${element.title}`;
-  boardBody.appendChild(column);
-  // boardBody.appendChild(column_tr);
-  
+
+    let boardBody = document.getElementById(`${element.board_id}`);
+    let columnHolder = document.createElement('div');
+    columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table; padding: 1px');
+    columnHolder.setAttribute('class', 'col-md text-center');
+    let column = document.createElement('div');
+    column.setAttribute('class', 'col-md text-center');
+    // let column_tr = document.createElement('p');
+    // column.setAttribute('class', 'col-sm');
+    // column.setAttribute('style', 'border : 2px solid yellow');
+    column.setAttribute('min-height', '10px');
+    column.setAttribute('min-width', '10px');
+    column.setAttribute('style', 'display: table; border: 2px solid white');
+    column.setAttribute('id', `column_${element.id}`);
+    column.setAttribute('id', `column_tr_${element.id}`);
+    column.setAttribute('data-board', element.board_id);
+    let title = document.createElement('span');
+    title.setAttribute('id', `title_board${element.id}`);
+    title.setAttribute('class', `non_draggable`);
+    title.innerText = `${element.title}`;
+    title.setAttribute('style', 'cursor:pointer;');
+    title.setAttribute('contenteditable', 'true');
+    title.setAttribute('title', `${element.title}`);
+    console.log(title.title);
+    title.addEventListener('focusout', function (event) {
+
+        console.log(title.innerText);
+
+        title.title = title.innerHTML;
+        const value = title.innerText;
+
+        const status_id = title.id.slice(11);
+
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+
+    });
+
+    title.addEventListener('keydown', function(event){
+        console.log(event.key);
+        console.log(this.title);
+        let titleInitialValue = title.title;
+        if (event.key === 'Escape'){
+            title.innerHTML = title.title;
+            title.blur();
+        } else if (event.key === 'Enter'){
+             console.log(title.innerText);
+
+        title.title = title.innerHTML;
+        const value = title.innerText;
+
+        const status_id = title.id.slice(11);
+
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+        title.blur();
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+        }
+
+
+    });
+
+
+    columnHolder.appendChild(title);
+    columnHolder.appendChild(column);
+    boardBody.appendChild(columnHolder);
+    // boardBody.appendChild(column_tr);
+
 }
 
 function createAppendCard(element) {
-  let columnBody = document.getElementById(`column_tr_${element.status_id}`);
-  if (columnBody) {
-    let cardBody = document.createElement('div');
-    cardBody.setAttribute('class', 'col-md');
-    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
-    cardBody.setAttribute('id', `card_${element.id}`);
-    cardBody.setAttribute('data-card', `${columnBody.id}`);
-    cardBody.setAttribute('data-board', columnBody.dataset.board);
-    cardBody.setAttribute('data-order', element['column_order']);
-    cardBody.innerText += `${element.title}`;
-    columnBody.appendChild(cardBody);
-  }
+    let columnBody = document.getElementById(`column_tr_${element.status_id}`);
+    if (columnBody) {
+        let cardBody = document.createElement('div');
+        cardBody.setAttribute('class', 'col-md');
+        cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor:pointer');
+        cardBody.setAttribute('id', `card_${element.id}`);
+        cardBody.setAttribute('data-card', `${columnBody.id}`);
+        cardBody.setAttribute('data-board', columnBody.dataset.board);
+        cardBody.setAttribute('data-order', element['column_order']);
+        cardBody.innerText += `${element.title}`;
+        columnBody.appendChild(cardBody);
+    }
+
 }
 
 const insertObjectInArray = (elem, arr) => {
@@ -347,6 +425,28 @@ function refreshloginModal() {
   submitLogin.addEventListener('click', function () {
     location.reload();
   });
+}
+
+export function renameModal() {
+    let renameModal = `<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Rename Column</h5>
+                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+        </div>
+    </div>
+</div>`
+
+    renameModal = document.createRange().createContextualFragment(renameModal)
+    document.body.appendChild(renameModal);
 }
 
 function handleNewCardClick(event) {

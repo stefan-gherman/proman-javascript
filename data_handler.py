@@ -52,8 +52,9 @@ def get_cards_for_board(board_id):
 @persistence.connection_handler
 def get_statuses_for_board(cursor, board_id):
     cursor.execute(
-        sql.SQL('SELECT statuses.* from statuses WHERE statuses.board_id = (%s);')
+        sql.SQL('SELECT statuses.* from statuses WHERE statuses.board_id = (%s) ORDER BY {id} ASC;')
             .format(
+            id=sql.Identifier('id'),
         ), [board_id]
     )
 
@@ -186,9 +187,21 @@ def create_card(cursor, card_title, board_id, status_id):
 
 
 @persistence.connection_handler
+def replace_status_column(cursor, status_id, title):
+    cursor.execute(
+        sql.SQL("UPDATE {statuses} SET {title} = (%s) WHERE {id} = (%s);").format(
+            statuses=sql.Identifier('statuses'),
+            title=sql.Identifier('title'),
+            id=sql.Identifier('id')
+        ), [title, status_id]
+    )
+
+    
+@persistence.connection_handler
 def rename_card(cursor, card_id, new_title):
     cursor.execute(f"""
         UPDATE cards
         SET title = '{new_title}'
         WHERE id = {card_id};
 """)
+
