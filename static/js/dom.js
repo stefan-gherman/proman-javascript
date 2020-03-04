@@ -182,7 +182,7 @@ export let dom = {
 function createAppend(element) {
     let boardBody = document.getElementById(`${element.board_id}`);
     let columnHolder = document.createElement('div');
-    columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table');
+    columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table; padding: 1px');
     columnHolder.setAttribute('class', 'col-md text-center');
     let column = document.createElement('div');
     column.setAttribute('class', 'col-md text-center');
@@ -191,7 +191,7 @@ function createAppend(element) {
     // column.setAttribute('style', 'border : 2px solid yellow');
     column.setAttribute('min-height', '10px');
     column.setAttribute('min-width', '10px');
-    column.setAttribute('style', 'display: block; border: 2px solid white');
+    column.setAttribute('style', 'display: table; border: 2px solid white');
     column.setAttribute('id', `column_${element.id}`);
     column.setAttribute('id', `column_tr_${element.id}`);
     column.setAttribute('data-board', element.board_id);
@@ -201,9 +201,13 @@ function createAppend(element) {
     title.innerText = `${element.title}`;
     title.setAttribute('style', 'cursor:pointer;');
     title.setAttribute('contenteditable', 'true');
+    title.setAttribute('title', `${element.title}`);
+    console.log(title.title);
     title.addEventListener('focusout', function (event) {
 
         console.log(title.innerText);
+
+        title.title = title.innerHTML;
         const value = title.innerText;
 
         const status_id = title.id.slice(11);
@@ -225,6 +229,41 @@ function createAppend(element) {
 
     });
 
+    title.addEventListener('keydown', function(event){
+        console.log(event.key);
+        console.log(this.title);
+        let titleInitialValue = title.title;
+        if (event.key === 'Escape'){
+            title.innerHTML = title.title;
+            title.blur();
+        } else if (event.key === 'Enter'){
+             console.log(title.innerText);
+
+        title.title = title.innerHTML;
+        const value = title.innerText;
+
+        const status_id = title.id.slice(11);
+
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+        title.blur();
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+        }
+
+
+    });
+
+
     columnHolder.appendChild(title);
     columnHolder.appendChild(column);
     boardBody.appendChild(columnHolder);
@@ -237,7 +276,7 @@ function createAppendCard(element) {
     if (columnBody) {
         let cardBody = document.createElement('div');
         cardBody.setAttribute('class', 'col-md');
-        cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+        cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor:pointer');
         cardBody.setAttribute('id', `card_${element.id}`);
         cardBody.setAttribute('data-card', `${columnBody.id}`);
         cardBody.setAttribute('data-board', columnBody.dataset.board);
