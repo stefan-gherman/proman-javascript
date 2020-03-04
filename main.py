@@ -142,6 +142,18 @@ def create_card():
         return make_response('SOmething went wrong', 500)
 
 
+@app.route('/api/rename-card/<card_id>', methods=['POST'])
+def rename_card(card_id):
+    try:
+        card_id = request.json['cardId']
+        new_title = request.json['tempValue']
+        data_handler.rename_card(card_id, new_title)
+        return make_response('OK', 200)
+    except:
+        print('Card rename unsuccessful.')
+        return make_response('Card rename unsuccessful.', 500)
+
+
 @app.route('/api/board-first-status/<board_id>')
 @json_response
 def api_board_first_status(board_id):

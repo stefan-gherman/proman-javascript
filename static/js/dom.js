@@ -111,6 +111,7 @@ export let dom = {
                         insertObjectInArray(columnBody, statusesDraggable);
 
                     }
+                    markCardsForClickRename();
                     console.log(statusesDraggable);
                     let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
                         el.dataset.card = target.id;
@@ -167,6 +168,7 @@ export let dom = {
             }
         }
 
+
     },
 
     loadCards: function (boardId) {
@@ -202,7 +204,7 @@ function createAppendCard(element) {
     if (columnBody) {
     let cardBody = document.createElement('div');
     cardBody.setAttribute('class', 'col-md');
-    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
     cardBody.setAttribute('id', `card_${element.id}`);
     cardBody.setAttribute('data-card', `${columnBody.id}`);
     cardBody.setAttribute('data-board', columnBody.dataset.board);
@@ -365,7 +367,7 @@ function handleNewCardClick(event) {
         let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
         let tempCard = document.createElement('div');
         tempCard.setAttribute('class', 'col-md');
-        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
         tempCard.setAttribute('id', `card_${data.last_card_id}`);
         tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
         tempCard.setAttribute('data-board', `${board_id}`);
@@ -376,3 +378,52 @@ function handleNewCardClick(event) {
     });
 }
 
+function markCardsForClickRename() {
+    let allCards = document.getElementsByClassName("col-md");
+    console.log('cards= ', allCards);
+    for (let card of allCards) {
+        if (card.id.includes('card_')) {
+            card.addEventListener('click', handleCardClickRename);
+            card.addEventListener('keydown', handleCardRenameKeyPressed);
+            card.addEventListener('change', handleCardRenameChange)
+        }
+    }
+}
+
+function handleCardRenameChange(event) {
+    event.currentTarget.innerHTML = event.target.defaultValue;
+}
+
+function handleCardClickRename(event) {
+    console.log('entered card click rename');
+    console.log('click rename event:', event.toElement.innerHTML);
+    event.toElement.innerHTML = `
+            <input type="text" value="${event.toElement.innerHTML}">
+    `;
+}
+
+function handleCardRenameKeyPressed(event) {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.target.defaultValue = event.target.value;
+        console.log(event.target.value);
+        console.log(event.target);
+        let tempValue = event.target.value;
+        event.currentTarget.innerHTML = tempValue;
+        console.log('post replacement ', event.target);
+        let cardId = event.currentTarget.id.slice(5)
+        console.log('parent_id card id ', event.currentTarget.id )
+        console.log(cardId);
+        let data = {cardId, tempValue};
+        const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/rename-card/${cardId}`, options);
+    }
+    else if (event.which == 27 || event.keyCode == 27) {
+        event.currentTarget.innerHTML = event.target.defaultValue;
+    }
+}

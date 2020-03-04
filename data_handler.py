@@ -153,7 +153,7 @@ def get_status_last_card_id(cursor, first_status_id):
 """)
     result = cursor.fetchone()
     if result is None:
-        return 0
+        return 1
     return result['id']
 
 
@@ -174,4 +174,13 @@ def create_card(cursor, card_title, board_id, status_id):
     cursor.execute(f"""
         INSERT INTO cards (title, board_id, status_id)
         VALUES ('{card_title}', {board_id}, {status_id});
+""")
+
+
+@persistence.connection_handler
+def rename_card(cursor, card_id, new_title):
+    cursor.execute(f"""
+        UPDATE cards
+        SET title = '{new_title}'
+        WHERE id = {card_id};
 """)
