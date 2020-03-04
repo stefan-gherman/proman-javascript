@@ -1,7 +1,7 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
 
-
+let triggered = false;
 let statusesDraggable = [];
 export let dom = {
   init: function () {
@@ -31,9 +31,9 @@ export let dom = {
                     <p>
                         <div class="navbar navbar-light bg-light rounded border">
                             <div class="d-flex flex-row">
-                              <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}"  role="button" aria-expanded="false" aria-controls="collapseExample">
+                              <div id="card-title" class="navbar navbar-light bg-light" data-board-id = "${board.id}" data-board-title="${board.title}" data-toggle="collapse" href=""  role="button" aria-expanded="false" aria-controls="collapseExample">
                                 ${board.title}
-                              </a>
+                              </div>
                               <button type="button" class="btn btn-light mr-1 rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
                               <button id="buttonNewStatusForBoard${board.id}" class="btn btn-light mr-1 rounded border-secondary" data-toggle="collapse" href="#collapseExampleInput${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 + New Status
@@ -103,13 +103,14 @@ export let dom = {
             columnResponse = await columnResponse.json();
             let columnBody = document.getElementById(`column_tr_${element.id}`);
             columnBody.innerHTML = '';
-            columnBody.innerText = element.title;
+            // columnBody.innerText = element.title;
             for (let card of columnResponse) {
               // console.log(card);
               createAppendCard(card);
             }
             
             insertObjectInArray(columnBody, statusesDraggable);
+            markCardsForClickRename()
             
           }
           console.log(statusesDraggable);
@@ -118,99 +119,176 @@ export let dom = {
             el.dataset.board = target.dataset.board;
             let i = 0;
             if (source.length > 0) {
-              for (let child of source.children) {
-                
-                child.dataset.order = i;
-                i += 1;
-                console.log(child, 'from source');
-                let dataToSend = {
-                  status_id: child.dataset.card.slice(10),
-                  board_id: child.dataset.board,
-                  column_order: child.dataset.order,
-                  id: child.id.slice(5)
-                };
-                fetch(`${window.origin}/move`, {
-                  method: 'POST',
-                  credentials: "include",
-                  cache: "no-cache",
-                  headers: new Headers({
-                    'content-type': 'application/json'
-                  }),
-                  body: JSON.stringify(dataToSend)
+                for (let child of source.children) {
+
+                    child.dataset.order = i;
+                    i += 1;
+                    console.log(child, 'from source');
+                    let dataToSend = {
+                        status_id: child.dataset.card.slice(10),
+                        board_id: child.dataset.board,
+                        column_order: child.dataset.order,
+                        id: child.id.slice(5)
+                    };
+                    fetch(`${window.origin}/move`, {
+                        method: 'POST',
+                        credentials: "include",
+                        cache: "no-cache",
+                        headers: new Headers({
+                            'content-type': 'application/json'
+                        }),
+                        body: JSON.stringify(dataToSend)
+                    });
+                }
+            }
+                        i = 0;
+                        for (let child of target.children) {
+                            child.dataset.order = i;
+                            i += 1;
+                            console.log(child, 'from target');
+                            let dataToSend = {
+                                status_id: child.dataset.card.slice(10),
+                                board_id: child.dataset.board,
+                                column_order: child.dataset.order,
+                                id: child.id.slice(5)
+                            };
+                            fetch(`${window.origin}/move`, {
+                                method: 'POST',
+                                credentials: "include",
+                                cache: "no-cache",
+                                headers: new Headers({
+                                    'content-type': 'application/json'
+                                }),
+                                body: JSON.stringify(dataToSend)
+                            });
+                        }
+
+                    });
+                    console.log(`Board event ${this.id} expanded`);
                 });
               }
-            }
-            i = 0;
-            for (let child of target.children) {
-              child.dataset.order = i;
-              i += 1;
-              console.log(child, 'from target');
-              let dataToSend = {
-                status_id: child.dataset.card.slice(10),
-                board_id: child.dataset.board,
-                column_order: child.dataset.order,
-                id: child.id.slice(5)
-              };
-              fetch(`${window.origin}/move`, {
-                method: 'POST',
-                credentials: "include",
-                cache: "no-cache",
-                headers: new Headers({
-                  'content-type': 'application/json'
-                }),
-                body: JSON.stringify(dataToSend)
-              });
-            }
-            
-          });
-          console.log(`Board event ${this.id} expanded`);
-        });
-      }
-    }
-    
-  },
-  loadCards: function (boardId) {
-    // retrieves cards and makes showCards called
-  },
-  showCards: function (cards) {
-    // shows the cards of a board
-    // it adds necessary event listeners also
-  },
-  // here comes more features
-  
+        }
+        addEventClickBoardTitle();
+    },
+
+    loadCards: function (boardId) {
+        // retrieves cards and makes showCards called
+    },
+    showCards: function (cards) {
+        // shows the cards of a board
+        // it adds necessary event listeners also
+    },
+    // here comes more features
+
 };
 
 function createAppend(element) {
-  let boardBody = document.getElementById(`${element.board_id}`);
-  let column = document.createElement('div');
-  column.setAttribute('class', 'col-md text-center');
-  // let column_tr = document.createElement('p');
-  // column.setAttribute('class', 'col-sm');
-  column.setAttribute('style', 'margin:10px; border: 2px solid black; display: table');
-  // column.setAttribute('style', 'display: block;')
-  column.setAttribute('id', `column_${element.id}`);
-  column.setAttribute('id', `column_tr_${element.id}`);
-  column.setAttribute('data-board', element.board_id);
-  column.innerText = `test ${element.title}`;
-  boardBody.appendChild(column);
-  // boardBody.appendChild(column_tr);
-  
+
+    let boardBody = document.getElementById(`${element.board_id}`);
+    let columnHolder = document.createElement('div');
+    columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table; padding: 1px');
+    columnHolder.setAttribute('class', 'col-md text-center');
+    let column = document.createElement('div');
+    column.setAttribute('class', 'col-md text-center');
+    // let column_tr = document.createElement('p');
+    // column.setAttribute('class', 'col-sm');
+    // column.setAttribute('style', 'border : 2px solid yellow');
+    column.setAttribute('min-height', '10px');
+    column.setAttribute('min-width', '10px');
+    column.setAttribute('style', 'display: table; border: 2px solid white');
+    column.setAttribute('id', `column_${element.id}`);
+    column.setAttribute('id', `column_tr_${element.id}`);
+    column.setAttribute('data-board', element.board_id);
+    let title = document.createElement('span');
+    title.setAttribute('id', `title_board${element.id}`);
+    title.setAttribute('class', `non_draggable`);
+    title.innerText = `${element.title}`;
+    title.setAttribute('style', 'cursor:pointer;');
+    title.setAttribute('contenteditable', 'true');
+    title.setAttribute('title', `${element.title}`);
+    console.log(title.title);
+    title.addEventListener('focusout', function (event) {
+
+        console.log(title.innerText);
+
+        title.title = title.innerHTML;
+        const value = title.innerText;
+
+        const status_id = title.id.slice(11);
+
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+
+    });
+
+    title.addEventListener('keydown', function(event){
+        console.log(event.key);
+        console.log(this.title);
+        let titleInitialValue = title.title;
+        if (event.key === 'Escape'){
+            title.innerHTML = title.title;
+            title.blur();
+        } else if (event.key === 'Enter'){
+             console.log(title.innerText);
+
+        title.title = title.innerHTML;
+        const value = title.innerText;
+
+        const status_id = title.id.slice(11);
+
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+        title.blur();
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+        }
+
+
+    });
+
+
+    columnHolder.appendChild(title);
+    columnHolder.appendChild(column);
+    boardBody.appendChild(columnHolder);
+    // boardBody.appendChild(column_tr);
+
 }
 
 function createAppendCard(element) {
-  let columnBody = document.getElementById(`column_tr_${element.status_id}`);
-  if (columnBody) {
-    let btnArchive = `<a href="/archive-card/${element.id}"> Archive </a>`;
-    let cardBody = document.createElement('div');
-    cardBody.setAttribute('class', 'col-md');
-    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-    cardBody.setAttribute('id', `card_${element.id}`);
-    cardBody.setAttribute('data-card', `${columnBody.id}`);
-    cardBody.setAttribute('data-board', columnBody.dataset.board);
-    cardBody.setAttribute('data-order', element['column_order']);
-    cardBody.innerHTML += `${element.title} ${btnArchive}`;
-    columnBody.appendChild(cardBody);
-  }
+    let columnBody = document.getElementById(`column_tr_${element.status_id}`);
+    if (columnBody) {
+        let cardBody = document.createElement('div');
+        cardBody.setAttribute('class', 'col-md');
+        cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor:pointer');
+        cardBody.setAttribute('id', `card_${element.id}`);
+        cardBody.setAttribute('data-card', `${columnBody.id}`);
+        cardBody.setAttribute('data-board', columnBody.dataset.board);
+        cardBody.setAttribute('data-order', element['column_order']);
+        cardBody.innerText += `${element.title}`;
+        columnBody.appendChild(cardBody);
+    }
+
 }
 
 const insertObjectInArray = (elem, arr) => {
@@ -346,35 +424,141 @@ function refreshloginModal() {
   });
 }
 
+export function renameModal() {
+    let renameModal = `<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Rename Column</h5>
+                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+        </div>
+    </div>
+</div>`
+
+    renameModal = document.createRange().createContextualFragment(renameModal)
+    document.body.appendChild(renameModal);
+}
+
 function handleNewCardClick(event) {
-  let board_id = event.target.id.slice(21);
-  let card_title = 'New Card';
-  let data = {board_id, card_title};
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  };
-  fetch('http://127.0.0.1:5000/api/create-card', options);
-  // Artificial temporary visual update, must change before card edit
-  fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
-    .then(response => response.json())
-    .then(function (data) {
-      console.log('data ', data);
-      let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
-      let tempCard = document.createElement('div');
-      tempCard.setAttribute('class', 'col-md');
-      tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-      tempCard.setAttribute('id', `card_${data.last_card_id}`);
-      tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-      tempCard.setAttribute('data-board', `${board_id}`);
-      tempCard.setAttribute('data-order', `${data.last_card_order}`);
-      tempCard.innerText += `${card_title}`;
-      console.log('temp card     ', tempCard);
-      tempColumn.appendChild(tempCard);
+    let board_id = event.target.id.slice(21);
+    let card_title = 'New Card';
+    let data = {board_id, card_title};
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    fetch('http://127.0.0.1:5000/api/create-card', options);
+    // Artificial temporary visual update, must change before card edit
+    fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
+        .then(response => response.json())
+        .then(function(data) {
+        console.log('data ', data);
+        let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
+        let tempCard = document.createElement('div');
+        tempCard.setAttribute('class', 'col-md');
+        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
+        tempCard.setAttribute('id', `card_${data.last_card_id}`);
+        tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+        tempCard.setAttribute('data-board', `${board_id}`);
+        tempCard.setAttribute('data-order', `${data.last_card_order}`);
+        tempCard.innerText += `${card_title}`;
+        console.log('temp card     ', tempCard);
+        tempColumn.appendChild(tempCard);
     });
+}
+
+function markCardsForClickRename() {
+    let allCards = document.getElementsByClassName("col-md");
+    console.log('cards= ', allCards);
+    for (let card of allCards) {
+        if (card.id.includes('card_')) {
+            card.addEventListener('click', handleCardClickRename);
+            card.addEventListener('keydown', handleCardRenameKeyPressed);
+            card.addEventListener('change', handleCardRenameChange)
+        }
+    }
+}
+
+function addEventClickBoardTitle() {
+    let allCardsTitle = document.querySelectorAll('#card-title');
+    for (let cardTitle of allCardsTitle) {
+        if (cardTitle.id.includes('card-title')) {
+            cardTitle.addEventListener('click', handleBoardTitle);
+            cardTitle.addEventListener('keydown', handleBoardTitleOnKeyPress);
+        }
+    }
+}
+
+function handleBoardTitle(event) {
+    event.target.innerHTML = `
+    <input type="text" class="form-control">
+    `
+}
+
+function handleBoardTitleOnKeyPress(event) {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.target.defaultValue = event.target.value;
+        let tempValue = event.target.value;
+        event.currentTarget.innerHTML = tempValue;
+        let boardId = event.currentTarget.dataset.boardId;
+        let data = {boardId: boardId, tempValue: tempValue};
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/rename-board-title/${boardId}`, options);
+
+    } else if (event.which == 27 || event.keyCode == 27) {
+        event.currentTarget.innerHTML = event.currentTarget.dataset.boardTitle;
+    }
+}
+
+function handleCardRenameChange(event) {
+    event.currentTarget.innerHTML = event.target.defaultValue;
+}
+
+function handleCardClickRename(event) {
+    console.log('entered card click rename');
+    console.log('click rename event:', event.toElement.innerHTML);
+    event.toElement.innerHTML = `
+            <input type="text" value="${event.toElement.innerHTML}">
+    `;
+}
+
+function handleCardRenameKeyPressed(event) {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.target.defaultValue = event.target.value;
+        console.log(event.target.value);
+        console.log(event.target);
+        let tempValue = event.target.value;
+        event.currentTarget.innerHTML = tempValue;
+        console.log('post replacement ', event.target);
+        let cardId = event.currentTarget.id.slice(5)
+        console.log('parent_id card id ', event.currentTarget.id )
+        console.log(cardId);
+        let data = {cardId, tempValue};
+        const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/rename-card/${cardId}`, options);
+    }
+    else if (event.which == 27 || event.keyCode == 27) {
+        event.currentTarget.innerHTML = event.target.defaultValue;
+    }
 }
 
 function handleDeleteClick(event) {
@@ -390,6 +574,4 @@ function handleDeleteClick(event) {
   };
   
   fetch('http://127.0.0.1:5000/api/delete-board', option).then(location.reload())
-  
-  
 }
