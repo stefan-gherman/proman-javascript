@@ -1,5 +1,7 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
+import { createAppendCard, handleNewCardClick, handleCardRenameKeyPressed, handleCardClickRename, handleCardRenameChange } from "./card_module.js";
+import { addEventClickBoardTitle, handleDeleteClick } from "./board_module.js"
 
 let triggered = false;
 let statusesDraggable = [];
@@ -63,19 +65,14 @@ export let dom = {
     }
     
     const outerHtml = `
-
             <ul class="container">
                 ${boardList}
             </ul>
-          
-        `;
+           `;
     
     let boardsContainer = document.querySelector('#boards');
     boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
-    
     const boardExpandButton = document.getElementsByTagName('button');
-    
-    
     for (let button of boardExpandButton) {
       if (button.id.slice(0, 21) === 'buttonNewCardForBoard') {
         button.addEventListener('click', handleNewCardClick);
@@ -108,10 +105,8 @@ export let dom = {
               // console.log(card);
               createAppendCard(card);
             }
-            
             insertObjectInArray(columnBody, statusesDraggable);
             markCardsForClickRename()
-            
           }
           console.log(statusesDraggable);
           let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
@@ -120,7 +115,6 @@ export let dom = {
             let i = 0;
             if (source.length > 0) {
                 for (let child of source.children) {
-
                     child.dataset.order = i;
                     i += 1;
                     console.log(child, 'from source');
@@ -162,7 +156,6 @@ export let dom = {
                                 body: JSON.stringify(dataToSend)
                             });
                         }
-
                     });
                     console.log(`Board event ${this.id} expanded`);
                 });
@@ -183,16 +176,12 @@ export let dom = {
 };
 
 function createAppend(element) {
-
     let boardBody = document.getElementById(`${element.board_id}`);
     let columnHolder = document.createElement('div');
     columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table; padding: 1px');
     columnHolder.setAttribute('class', 'col-md text-center');
     let column = document.createElement('div');
     column.setAttribute('class', 'col-md text-center');
-    // let column_tr = document.createElement('p');
-    // column.setAttribute('class', 'col-sm');
-    // column.setAttribute('style', 'border : 2px solid yellow');
     column.setAttribute('min-height', '10px');
     column.setAttribute('min-width', '10px');
     column.setAttribute('style', 'display: table; border: 2px solid white');
@@ -208,19 +197,14 @@ function createAppend(element) {
     title.setAttribute('title', `${element.title}`);
     console.log(title.title);
     title.addEventListener('focusout', function (event) {
-
         console.log(title.innerText);
-
         title.title = title.innerHTML;
         const value = title.innerText;
-
         const status_id = title.id.slice(11);
-
         const dataToSend = {
             value: value,
             status_id: status_id
         };
-
         fetch(`${window.origin}/update-statuses`, {
             method: 'POST',
             credentials: "include",
@@ -230,9 +214,7 @@ function createAppend(element) {
             }),
             body: JSON.stringify(dataToSend)
         });
-
     });
-
     title.addEventListener('keydown', function(event){
         console.log(event.key);
         console.log(this.title);
@@ -263,45 +245,21 @@ function createAppend(element) {
             body: JSON.stringify(dataToSend)
         });
         }
-
-
     });
-
-
     columnHolder.appendChild(title);
     columnHolder.appendChild(column);
     boardBody.appendChild(columnHolder);
-    // boardBody.appendChild(column_tr);
-
 }
 
-function createAppendCard(element) {
-    let columnBody = document.getElementById(`column_tr_${element.status_id}`);
-    if (columnBody) {
-        let cardBody = document.createElement('div');
-        cardBody.setAttribute('class', 'col-md');
-        cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor:pointer');
-        cardBody.setAttribute('id', `card_${element.id}`);
-        cardBody.setAttribute('data-card', `${columnBody.id}`);
-        cardBody.setAttribute('data-board', columnBody.dataset.board);
-        cardBody.setAttribute('data-order', element['column_order']);
-        cardBody.innerText += `${element.title}`;
-        columnBody.appendChild(cardBody);
-    }
 
-}
 
 const insertObjectInArray = (elem, arr) => {
-  
-  // console.log('element compared',elem);
-  // console.log('arr elems', arr[0]);
   let search = 0;
   let pos;
   if (arr.length === 0) {
     arr.push(elem);
   }
   for (let el of arr) {
-    
     if (elem.id != el.id) {
       search += 1;
     } else {
@@ -314,16 +272,11 @@ const insertObjectInArray = (elem, arr) => {
     arr.splice(pos, 1);
     arr.push(elem);
   }
-  
 };
 
 function handleNewColumnclick(event) {
-  //console.clear()
   let board_id = event.target.id.slice(23);
   let inputsColumnName = document.querySelectorAll("input");
-  // let status_title;
-  
-  // console.log(input);
   for (let input of inputsColumnName) {
     input.addEventListener('change', function (event) {
       console.log('input value', event.target.value);
@@ -331,7 +284,6 @@ function handleNewColumnclick(event) {
       let data = {board_id, status_title};
       const options = {
         method: 'POST',
-        // mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -342,140 +294,9 @@ function handleNewColumnclick(event) {
   }
 }
 
-export function createRegisterModal() {
-  let registerModal = `
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Register</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="register">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username"
-                               placeholder="Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <div id="errorAlert" class="alert alert-danger" role="alert" style="display: none"></div>
-                    <div id="successAlert" class="alert alert-success" role="alert" style="display: none"></div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-    `;
-  document.querySelector('#register-modal').innerHTML = registerModal;
-  
-}
-
-export function createLoginModal() {
-  let loginModal = `
-    <!-- Modal Login-->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="login">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username-login"
-                               placeholder="Username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password-login" placeholder="Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="submit-login" >Submit</button>
-                    <div id="errorAlert-login" class="alert alert-danger" role="alert" style="display: none"></div>
-                    <div id="successAlert-login" class="alert alert-success" role="alert" style="display: none">Logged in</div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-    `;
-  document.querySelector('#login-modal').innerHTML = loginModal;
-  refreshloginModal();
-  
-}
 
 
-function refreshloginModal() {
-  let submitLogin = document.querySelector('#close-login');
-  submitLogin.addEventListener('click', function () {
-    location.reload();
-  });
-}
 
-export function renameModal() {
-    let renameModal = `<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Rename Column</h5>
-                <button type="button" class="close" data-dismiss="modal" id="close-login" aria-label="Close" ">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                
-            </div>
-        </div>
-    </div>
-</div>`
-
-    renameModal = document.createRange().createContextualFragment(renameModal)
-    document.body.appendChild(renameModal);
-}
-
-function handleNewCardClick(event) {
-    let board_id = event.target.id.slice(21);
-    let card_title = 'New Card';
-    let data = {board_id, card_title};
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    };
-    fetch('http://127.0.0.1:5000/api/create-card', options);
-    // Artificial temporary visual update, must change before card edit
-    fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
-        .then(response => response.json())
-        .then(function(data) {
-        console.log('data ', data);
-        let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
-        let tempCard = document.createElement('div');
-        tempCard.setAttribute('class', 'col-md');
-        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
-        tempCard.setAttribute('id', `card_${data.last_card_id}`);
-        tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-        tempCard.setAttribute('data-board', `${board_id}`);
-        tempCard.setAttribute('data-order', `${data.last_card_order}`);
-        tempCard.innerText += `${card_title}`;
-        console.log('temp card     ', tempCard);
-        tempColumn.appendChild(tempCard);
-    });
-}
 
 function markCardsForClickRename() {
     let allCards = document.getElementsByClassName("col-md");
@@ -487,91 +308,4 @@ function markCardsForClickRename() {
             card.addEventListener('change', handleCardRenameChange)
         }
     }
-}
-
-function addEventClickBoardTitle() {
-    let allCardsTitle = document.querySelectorAll('#card-title');
-    for (let cardTitle of allCardsTitle) {
-        if (cardTitle.id.includes('card-title')) {
-            cardTitle.addEventListener('click', handleBoardTitle);
-            cardTitle.addEventListener('keydown', handleBoardTitleOnKeyPress);
-        }
-    }
-}
-
-function handleBoardTitle(event) {
-    event.target.innerHTML = `
-    <input type="text" class="form-control">
-    `
-}
-
-function handleBoardTitleOnKeyPress(event) {
-    if (event.which == 13 || event.keyCode == 13) {
-        event.target.defaultValue = event.target.value;
-        let tempValue = event.target.value;
-        event.currentTarget.innerHTML = tempValue;
-        let boardId = event.currentTarget.dataset.boardId;
-        let data = {boardId: boardId, tempValue: tempValue};
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(data)
-        };
-        fetch(`http://127.0.0.1:5000/api/rename-board-title/${boardId}`, options);
-
-    } else if (event.which == 27 || event.keyCode == 27) {
-        event.currentTarget.innerHTML = event.currentTarget.dataset.boardTitle;
-    }
-}
-
-function handleCardRenameChange(event) {
-    event.currentTarget.innerHTML = event.target.defaultValue;
-}
-
-function handleCardClickRename(event) {
-    console.log('entered card click rename');
-    console.log('click rename event:', event.toElement.innerHTML);
-    event.toElement.innerHTML = `
-            <input type="text" value="${event.toElement.innerHTML}">
-    `;
-}
-
-function handleCardRenameKeyPressed(event) {
-    if (event.which == 13 || event.keyCode == 13) {
-        event.target.defaultValue = event.target.value;
-        console.log(event.target.value);
-        console.log(event.target);
-        let tempValue = event.target.value;
-        event.currentTarget.innerHTML = tempValue;
-        console.log('post replacement ', event.target);
-        let cardId = event.currentTarget.id.slice(5)
-        console.log('parent_id card id ', event.currentTarget.id )
-        console.log(cardId);
-        let data = {cardId, tempValue};
-        const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-        };
-        fetch(`http://127.0.0.1:5000/api/rename-card/${cardId}`, options);
-    }
-    else if (event.which == 27 || event.keyCode == 27) {
-        event.currentTarget.innerHTML = event.target.defaultValue;
-    }
-}
-
-function handleDeleteClick(event) {
-  let board_id = event.target.id.slice(24);
-  let data = {board_id};
-  console.log(data);
-  const option = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  };
-  
-  fetch('http://127.0.0.1:5000/api/delete-board', option).then(location.reload())
 }
