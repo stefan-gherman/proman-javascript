@@ -190,14 +190,21 @@ function createAppend(element) {
     column.setAttribute('data-board', element.board_id);
     let title = document.createElement('span');
     title.setAttribute('id', `title_board${element.id}`);
-    title.setAttribute('class', `non_draggable`);
+    title.setAttribute('class', `no-draggable`);
     title.innerText = `${element.title}`;
-    title.setAttribute('style', 'cursor:pointer;');
+    title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed');
     title.setAttribute('contenteditable', 'true');
     title.setAttribute('title', `${element.title}`);
+    title.setAttribute('tabIndex', '-1');
     console.log(title.title);
+    title.addEventListener('click', function(){
+        title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed; box-shadow: 0 0 8px #9ecaed')
+    });
     title.addEventListener('focusout', function (event) {
         console.log(title.innerText);
+        if(title.innerText.trim() === '') {
+            title.innerText = title.title;
+        }
         title.title = title.innerHTML;
         const value = title.innerText;
         const status_id = title.id.slice(11);
@@ -214,6 +221,7 @@ function createAppend(element) {
             }),
             body: JSON.stringify(dataToSend)
         });
+         title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed')
     });
     title.addEventListener('keydown', function(event){
         console.log(event.key);
@@ -222,8 +230,12 @@ function createAppend(element) {
         if (event.key === 'Escape'){
             title.innerHTML = title.title;
             title.blur();
+            title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed')
         } else if (event.key === 'Enter'){
              console.log(title.innerText);
+             if (title.innerText.trim() === ''){
+                 title.innerText=title.title
+             }
 
         title.title = title.innerHTML;
         const value = title.innerText;
@@ -244,6 +256,7 @@ function createAppend(element) {
             }),
             body: JSON.stringify(dataToSend)
         });
+         title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed')
         }
     });
     columnHolder.appendChild(title);
