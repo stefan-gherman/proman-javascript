@@ -20,9 +20,10 @@ def get_boards(cursor):
     """
     # return persistence.get_boards(force=True)
     cursor.execute(
-        sql.SQL('SELECT * FROM {boards};')
+        sql.SQL('SELECT * FROM {boards} ORDER BY {id};')
             .format(
-            boards=sql.Identifier('boards')
+            boards=sql.Identifier('boards'),
+            id=sql.Identifier('id')
         )
     )
 
@@ -160,3 +161,14 @@ def create_card(cursor, card_title, board_id, status_id):
         INSERT INTO cards (title, board_id, status_id)
         VALUES ('{card_title}', {board_id}, {status_id});
 """)
+
+
+@persistence.connection_handler
+def rename_card_title(cursor, id, title):
+    cursor.execute(
+        f"""
+        UPDATE boards
+        SET title = '{title}'
+        WHERE id = '{id}';
+        """
+    )
