@@ -387,9 +387,6 @@ function markCardsForClickRename() {
             card.addEventListener('change', handleCardRenameChange)
         }
     }
-
-
-
 }
 
 function handleCardRenameChange(event) {
@@ -402,7 +399,6 @@ function handleCardClickRename(event) {
     event.toElement.innerHTML = `
             <input type="text" value="${event.toElement.innerHTML}">
     `;
-
 }
 
 function handleCardRenameKeyPressed(event) {
