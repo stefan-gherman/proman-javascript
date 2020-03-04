@@ -1,5 +1,5 @@
 import {dom} from "./dom.js";
-import {createRegisterModal, createLoginModal, renameModal} from "./dom.js";
+import {createRegisterModal, createLoginModal, renameModal} from "./login_modals.js";
 
 
 
