@@ -173,14 +173,17 @@ def api_board_first_status(board_id):
     return {'first_status_id': first_status_id, 'last_card_id': last_card_id, 'last_card_order': last_card_order}
 
 
-@app.route('/api/rename-card-title/<card_id>', methods=['POST'])
-def rename_card_title(card_id):
+@app.route('/api/rename-board-title/<board_id>', methods=['POST'])
+def rename_board_title(board_id):
     data = request.get_data().decode()
     dict_data = json.loads(data)
+    print(dict_data)
     try:
-        card_id = dict_data['cardId']
+        board_id = dict_data['boardId']
         new_title = dict_data['tempValue']
-        data_handler.rename_card_title(card_id, new_title)
+        print(board_id)
+        print(new_title)
+        data_handler.rename_board_title(board_id, new_title)
         return make_response('OK', 200)
     except:
         return make_response('Card rename unsuccessful.', 500)
