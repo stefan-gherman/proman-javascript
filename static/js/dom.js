@@ -31,9 +31,9 @@ export let dom = {
                     <p>
                         <div class="navbar navbar-light bg-light rounded border">
                             <div class="d-flex flex-row">
-                              <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}"  role="button" aria-expanded="false" aria-controls="collapseExample">
+                              <div id="card-title" class="navbar navbar-light bg-light" data-board-id = "${board.id}" data-board-title="${board.title}" data-toggle="collapse" href=""  role="button" aria-expanded="false" aria-controls="collapseExample">
                                 ${board.title}
-                              </a>
+                              </div>
                               <button type="button" class="btn btn-light mr-1 rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
                               <button id="buttonNewStatusForBoard${board.id}" class="btn btn-light mr-1 rounded border-secondary" data-toggle="collapse" href="#collapseExampleInput${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 + New Status
@@ -80,11 +80,9 @@ export let dom = {
                 // console.log('entered if ');
                 button.addEventListener('click', handleNewColumnclick);
 
-            }
-            else if (button.id.includes('nav')) {
+            } else if (button.id.includes('nav')) {
                 console.log('skipped nav buttons');
-            }
-            else {
+            } else {
                 button.addEventListener('click', async function (event) {
                     let idForBoard = button.id.slice(6);
                     console.log('idb', idForBoard);
@@ -166,7 +164,7 @@ export let dom = {
                 });
             }
         }
-
+        addEventClickCardTitle();
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -199,15 +197,15 @@ function createAppend(element) {
 function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.status_id}`);
     if (columnBody) {
-    let cardBody = document.createElement('div');
-    cardBody.setAttribute('class', 'col-md');
-    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-    cardBody.setAttribute('id', `card_${element.id}`);
-    cardBody.setAttribute('data-card', `${columnBody.id}`);
-    cardBody.setAttribute('data-board', columnBody.dataset.board);
-    cardBody.setAttribute('data-order', element['column_order']);
-    cardBody.innerText += `${element.title}`;
-    columnBody.appendChild(cardBody);
+        let cardBody = document.createElement('div');
+        cardBody.setAttribute('class', 'col-md');
+        cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+        cardBody.setAttribute('id', `card_${element.id}`);
+        cardBody.setAttribute('data-card', `${columnBody.id}`);
+        cardBody.setAttribute('data-board', columnBody.dataset.board);
+        cardBody.setAttribute('data-order', element['column_order']);
+        cardBody.innerText += `${element.title}`;
+        columnBody.appendChild(cardBody);
     }
 }
 
@@ -359,19 +357,53 @@ function handleNewCardClick(event) {
     // Artificial temporary visual update, must change before card edit
     fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
         .then(response => response.json())
-        .then(function(data) {
-        console.log('data ', data);
-        let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
-        let tempCard = document.createElement('div');
-        tempCard.setAttribute('class', 'col-md');
-        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-        tempCard.setAttribute('id', `card_${data.last_card_id}`);
-        tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-        tempCard.setAttribute('data-board', `${board_id}`);
-        tempCard.setAttribute('data-order', `${data.last_card_order}`);
-        tempCard.innerText += `${card_title}`;
-        console.log('temp card     ', tempCard);
-        tempColumn.appendChild(tempCard);
-    });
+        .then(function (data) {
+            console.log('data ', data);
+            let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
+            let tempCard = document.createElement('div');
+            tempCard.setAttribute('class', 'col-md');
+            tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+            tempCard.setAttribute('id', `card_${data.last_card_id}`);
+            tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+            tempCard.setAttribute('data-board', `${board_id}`);
+            tempCard.setAttribute('data-order', `${data.last_card_order}`);
+            tempCard.innerText += `${card_title}`;
+            console.log('temp card     ', tempCard);
+            tempColumn.appendChild(tempCard);
+        });
 }
 
+function addEventClickCardTitle() {
+    let allCardsTitle = document.querySelectorAll('#card-title');
+    for (let cardTitle of allCardsTitle) {
+        if (cardTitle.id.includes('card-title')) {
+            cardTitle.addEventListener('click', handleTitleRename);
+            cardTitle.addEventListener('keydown', handleCardTitleOnKeyPress);
+        }
+    }
+}
+
+function handleTitleRename(event) {
+    event.target.innerHTML = `
+    <input type="text" class="form-control">
+    `
+
+}
+
+function handleCardTitleOnKeyPress(event) {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.target.defaultValue = event.target.value;
+        let tempValue = event.target.value;
+        event.currentTarget.innerHTML = tempValue;
+        let cardId = event.currentTarget.dataset.boardId;
+        let data = {cardId, tempValue};
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/rename-card-title/${cardId}`, options);
+
+    } else if (event.which == 27 || event.keyCode == 27) {
+        event.currentTarget.innerHTML = event.currentTarget.dataset.boardTitle;
+    }
+}
