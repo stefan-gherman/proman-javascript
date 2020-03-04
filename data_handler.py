@@ -108,10 +108,13 @@ def create_private_new_board(cursor, board_title, logged_in):
     cursor.execute(f'''
         INSERT INTO boards (title, owner)
         VALUES ('{board_title}','{logged_in}');
+''')
+
+
 @persistence.connection_handler
 def archive_cards(cursor, card_id, option=True):
     cursor.execute(f'''
-    UPDATE cards SET archive = {option} WHERE id = {card_id}
+    UPDATE cards SET archive = {option} WHERE id = {card_id};
 ''')
 
 
@@ -218,4 +221,11 @@ def rename_card(cursor, card_id, new_title):
         UPDATE cards
         SET title = '{new_title}'
         WHERE id = {card_id};
+""")
+
+
+@persistence.connection_handler
+def delete_card(cursor, card_id):
+    cursor.execute(f"""
+        DELETE FROM cards WHERE id={card_id};
 """)

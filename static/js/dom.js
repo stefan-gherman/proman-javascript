@@ -1,6 +1,6 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
-import { createAppendCard, handleNewCardClick, handleCardRenameKeyPressed, handleCardClickRename, handleCardRenameChange } from "./card_module.js";
+import { createAppendCard, handleNewCardClick, markCardsForClickRename, markCardsDeleteButton } from "./card_module.js";
 import { addEventClickBoardTitle, handleDeleteClick } from "./board_module.js"
 
 let triggered = false;
@@ -92,7 +92,7 @@ export let dom = {
           console.log('Pop Boards');
           let boardBody = document.getElementById(`${idForBoard}`);
           boardBody.innerHTML = '';
-          
+
           for (let element of response) {
             console.log('Populating with the', element);
             createAppend(element);
@@ -106,7 +106,8 @@ export let dom = {
               createAppendCard(card);
             }
             insertObjectInArray(columnBody, statusesDraggable);
-            markCardsForClickRename()
+            markCardsForClickRename();
+            markCardsDeleteButton();
           }
           console.log(statusesDraggable);
           let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
@@ -252,7 +253,6 @@ function createAppend(element) {
 }
 
 
-
 const insertObjectInArray = (elem, arr) => {
   let search = 0;
   let pos;
@@ -294,18 +294,3 @@ function handleNewColumnclick(event) {
   }
 }
 
-
-
-
-
-function markCardsForClickRename() {
-    let allCards = document.getElementsByClassName("col-md");
-    console.log('cards= ', allCards);
-    for (let card of allCards) {
-        if (card.id.includes('card_')) {
-            card.addEventListener('click', handleCardClickRename);
-            card.addEventListener('keydown', handleCardRenameKeyPressed);
-            card.addEventListener('change', handleCardRenameChange)
-        }
-    }
-}

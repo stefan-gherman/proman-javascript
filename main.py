@@ -169,6 +169,17 @@ def rename_card(card_id):
         return make_response('Card rename unsuccessful.', 500)
 
 
+@app.route('/api/delete-card/<card_id>', methods=['POST'])
+def delete_card(card_id):
+    try:
+        card_id = request.json['cardId']
+        data_handler.delete_card(card_id)
+        return make_response('OK', 200)
+    except:
+        print('Card delete unsuccessful.')
+        return make_response('Card delete unsuccessful.', 500)
+
+
 @app.route('/api/board-first-status/<board_id>')
 @json_response
 def api_board_first_status(board_id):

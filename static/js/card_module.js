@@ -1,15 +1,30 @@
 export function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.status_id}`);
     if (columnBody) {
-        let cardBody = document.createElement('div');
+
+        let cardBodyContainer = document.createElement('div');
+        cardBodyContainer.setAttribute('id', `container_card_${element.id}`);
+        cardBodyContainer.setAttribute('data-card', `${columnBody.id}`);
+        cardBodyContainer.setAttribute('data-board', columnBody.dataset.board);
+        cardBodyContainer.setAttribute('data-order', element['column_order']);
+        columnBody.appendChild(cardBodyContainer);
+
+        let deleteCardButton = document.createElement('span');
+        deleteCardButton.setAttribute('class', 'card-delete-button')
+        deleteCardButton.setAttribute('id', `delete_card_${element.id}`);
+        deleteCardButton.innerText = 'x';
+
+        let cardBody = document.createElement('span');
         cardBody.setAttribute('class', 'col-md');
         cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor:pointer');
         cardBody.setAttribute('id', `card_${element.id}`);
-        cardBody.setAttribute('data-card', `${columnBody.id}`);
-        cardBody.setAttribute('data-board', columnBody.dataset.board);
-        cardBody.setAttribute('data-order', element['column_order']);
+        // cardBody.setAttribute('data-card', `${columnBody.id}`);
+        // cardBody.setAttribute('data-board', columnBody.dataset.board);
+        // cardBody.setAttribute('data-order', element['column_order']);
+
         cardBody.innerText += `${element.title}`;
-        columnBody.appendChild(cardBody);
+        cardBodyContainer.appendChild(cardBody);
+        cardBodyContainer.appendChild(deleteCardButton);
     }
 }
 
@@ -32,17 +47,35 @@ export function handleNewCardClick(event) {
         .then(function(data) {
         console.log('data ', data);
         let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
-        let tempCard = document.createElement('div');
+
+        let cardBodyContainer = document.createElement('div');
+        cardBodyContainer.setAttribute('id', `container_card_${data.last_card_id + 1}`);
+        cardBodyContainer.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+        cardBodyContainer.setAttribute('data-board', `${board_id}`);
+        cardBodyContainer.setAttribute('data-order', `${data.last_card_order}`);
+        tempColumn.appendChild(cardBodyContainer);
+
+
+        let tempCard = document.createElement('span');
         tempCard.setAttribute('class', 'col-md');
         tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
-        tempCard.setAttribute('id', `card_${data.last_card_id}`);
-        tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-        tempCard.setAttribute('data-board', `${board_id}`);
-        tempCard.setAttribute('data-order', `${data.last_card_order}`);
+        tempCard.setAttribute('id', `card_${data.last_card_id + 1}`);
+        // tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+        // tempCard.setAttribute('data-board', `${board_id}`);
+        // tempCard.setAttribute('data-order', `${data.last_card_order}`);
         tempCard.innerText += `${card_title}`;
-        console.log('temp card     ', tempCard);
-        tempColumn.appendChild(tempCard);
+        cardBodyContainer.appendChild(tempCard);
+
+        let deleteCardButton = document.createElement('span');
+        deleteCardButton.setAttribute('class', 'card-delete-button')
+        deleteCardButton.setAttribute('id', `delete_card_${data.last_card_id}`);
+        deleteCardButton.innerText = 'x';
+        cardBodyContainer.appendChild(deleteCardButton);
+
+        markCardsForClickRename();
+        markCardsDeleteButton();
     });
+
 }
 
 
@@ -54,9 +87,10 @@ export function handleCardRenameKeyPressed(event) {
         let tempValue = event.target.value;
         event.currentTarget.innerHTML = tempValue;
         console.log('post replacement ', event.target);
-        let cardId = event.currentTarget.id.slice(5)
-        console.log('parent_id card id ', event.currentTarget.id )
-        console.log(cardId);
+        let cardId = event.currentTarget.id.slice(5);
+        console.log('parent_id card id ', event.currentTarget.id );
+        console.log('sending id:', cardId);
+        console.log('sending new title:', tempValue);
         let data = {cardId, tempValue};
         const options = {
         method: 'POST',
@@ -83,4 +117,42 @@ export function handleCardClickRename(event) {
 
 export function handleCardRenameChange(event) {
     event.currentTarget.innerHTML = event.target.defaultValue;
+}
+
+
+export function markCardsForClickRename() {
+    let allCards = document.getElementsByClassName("col-md");
+    console.log('cards= ', allCards);
+    for (let card of allCards) {
+        if (card.id.includes('card_')) {
+            card.addEventListener('click', handleCardClickRename);
+            card.addEventListener('keydown', handleCardRenameKeyPressed);
+            card.addEventListener('change', handleCardRenameChange)
+        }
+    }
+}
+
+
+export function markCardsDeleteButton() {
+    let cardsDeleteButtons = document.querySelectorAll('.card-delete-button');
+    for (let delButton of cardsDeleteButtons) {
+        delButton.addEventListener('click', handleDeleteCardClick);
+    }
+}
+
+
+function handleDeleteCardClick(event) {
+    let cardId = event.currentTarget.id.slice(12);
+    let elem = document.getElementById(`container_card_${cardId}`);
+    elem.parentNode.removeChild(elem);
+    let data = {cardId};
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/delete-card/${cardId}`, options);
+
 }
