@@ -108,6 +108,8 @@ def create_private_new_board(cursor, board_title, logged_in):
     cursor.execute(f'''
         INSERT INTO boards (title, owner)
         VALUES ('{board_title}','{logged_in}');
+''')
+
 @persistence.connection_handler
 def archive_cards(cursor, card_id, option=True):
     cursor.execute(f'''
