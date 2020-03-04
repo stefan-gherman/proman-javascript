@@ -94,6 +94,14 @@ def create_new_board(cursor, board_title, owner_public='public'):
         VALUES ('{board_title}','{owner_public}');
 ''')
 
+
+@persistence.connection_handler
+def delete_board(cursor, board_id):
+    cursor.execute(f'''
+    DELETE FROM boards WHERE id={board_id}
+''')
+    
+
 @persistence.connection_handler
 def create_private_new_board(cursor, board_title, logged_in):
     cursor.execute(f'''
