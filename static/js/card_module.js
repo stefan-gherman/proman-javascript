@@ -12,6 +12,7 @@ export function createAppendCard(element) {
         let deleteCardButton = document.createElement('span');
         deleteCardButton.setAttribute('class', 'card-delete-button')
         deleteCardButton.setAttribute('id', `delete_card_${element.id}`);
+        deleteCardButton.setAttribute('title', `Delete ${element.title}`)
         deleteCardButton.innerText = 'x';
 
         let cardBody = document.createElement('span');
@@ -69,6 +70,7 @@ export function handleNewCardClick(event) {
         let deleteCardButton = document.createElement('span');
         deleteCardButton.setAttribute('class', 'card-delete-button')
         deleteCardButton.setAttribute('id', `delete_card_${data.last_card_id}`);
+        deleteCardButton.setAttribute('title', `Delete ${card_title}`)
         deleteCardButton.innerText = 'x';
         cardBodyContainer.appendChild(deleteCardButton);
 
