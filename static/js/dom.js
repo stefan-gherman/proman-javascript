@@ -31,9 +31,9 @@ export let dom = {
                     <p>
                         <div class="navbar navbar-light bg-light rounded border">
                             <div class="d-flex flex-row">
-                              <a class="btn btn-light" data-toggle="collapse" href="#collapseExample${board.id}"  role="button" aria-expanded="false" aria-controls="collapseExample">
+                              <div id="card-title" class="navbar navbar-light bg-light" data-board-id = "${board.id}" data-board-title="${board.title}" data-toggle="collapse" href=""  role="button" aria-expanded="false" aria-controls="collapseExample">
                                 ${board.title}
-                              </a>
+                              </div>
                               <button type="button" class="btn btn-light mr-1 rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
                               <button id="buttonNewStatusForBoard${board.id}" class="btn btn-light mr-1 rounded border-secondary" data-toggle="collapse" href="#collapseExampleInput${board.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 + New Status
@@ -69,7 +69,6 @@ export let dom = {
             </ul>
           
         `;
-
     
     let boardsContainer = document.querySelector('#boards');
     boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
@@ -168,10 +167,8 @@ export let dom = {
                     console.log(`Board event ${this.id} expanded`);
                 });
               }
-
         }
-
-
+        addEventClickCardTitle();
     },
 
     loadCards: function (boardId) {
@@ -489,6 +486,30 @@ function markCardsForClickRename() {
             card.addEventListener('keydown', handleCardRenameKeyPressed);
             card.addEventListener('change', handleCardRenameChange)
         }
+    }
+}
+
+function handleTitleRename(event) {
+    event.target.innerHTML = `
+    <input type="text" class="form-control">
+    `
+}
+
+function handleCardTitleOnKeyPress(event) {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.target.defaultValue = event.target.value;
+        let tempValue = event.target.value;
+        event.currentTarget.innerHTML = tempValue;
+        let cardId = event.currentTarget.dataset.boardId;
+        let data = {cardId, tempValue};
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/rename-card-title/${cardId}`, options);
+
+    } else if (event.which == 27 || event.keyCode == 27) {
+        event.currentTarget.innerHTML = event.currentTarget.dataset.boardTitle;
     }
 }
 

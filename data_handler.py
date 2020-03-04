@@ -187,6 +187,16 @@ def create_card(cursor, card_title, board_id, status_id):
 
 
 @persistence.connection_handler
+def rename_card_title(cursor, id, title):
+    cursor.execute(
+        f"""
+        UPDATE boards
+        SET title = '{title}'
+        WHERE id = '{id}';
+        """
+    )
+
+@persistence.connection_handler
 def replace_status_column(cursor, status_id, title):
     cursor.execute(
         sql.SQL("UPDATE {statuses} SET {title} = (%s) WHERE {id} = (%s);").format(
@@ -204,4 +214,5 @@ def rename_card(cursor, card_id, new_title):
         SET title = '{new_title}'
         WHERE id = {card_id};
 """)
+
 

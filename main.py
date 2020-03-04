@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, render_template, url_for, request, jsonify, escape, session, redirect, make_response
 from util import json_response, hash_password, verify_password
 from flask_cors import CORS
@@ -169,6 +171,19 @@ def api_board_first_status(board_id):
     last_card_id = data_handler.get_status_last_card_id(first_status_id)
     last_card_order = data_handler.get_status_last_card_order(first_status_id)
     return {'first_status_id': first_status_id, 'last_card_id': last_card_id, 'last_card_order': last_card_order}
+
+
+@app.route('/api/rename-card-title/<card_id>', methods=['POST'])
+def rename_card_title(card_id):
+    data = request.get_data().decode()
+    dict_data = json.loads(data)
+    try:
+        card_id = dict_data['cardId']
+        new_title = dict_data['tempValue']
+        data_handler.rename_card_title(card_id, new_title)
+        return make_response('OK', 200)
+    except:
+        return make_response('Card rename unsuccessful.', 500)
 
 
 @app.route('/logout')
