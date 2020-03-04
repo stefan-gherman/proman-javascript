@@ -19,7 +19,10 @@ def get_boards():
     """
     All the boards
     """
-    return data_handler.get_boards()
+    logged_in = None
+    if 'username' in session:
+        logged_in = session['username']
+    return data_handler.get_boards(logged_in)
 
 
 # @app.route("/get-cards/<int:board_id>")
@@ -62,6 +65,23 @@ def reorder_cards():
 def create_new_board():
     board_title = request.form['board-title']
     data_handler.create_new_board(board_title)
+    return redirect(url_for('index'))
+
+  
+@app.route('/api/delete-board', methods=['POST'])
+def delete_board():
+    board_id = request.json['board_id']
+    data_handler.delete_board(board_id)
+    return redirect("/")
+  
+  
+@app.route("/api/create-private-board", methods=['GET', 'POST'])
+def create_private_new_board():
+    logged_in = None
+    if 'username' in session:
+        logged_in = session['username']
+    private_board_title = request.form['private-board-title']
+    data_handler.create_private_new_board(private_board_title, logged_in)
     return redirect(url_for('index'))
 
 
@@ -132,6 +152,18 @@ def create_card():
         return make_response('SOmething went wrong', 500)
 
 
+@app.route('/api/rename-card/<card_id>', methods=['POST'])
+def rename_card(card_id):
+    try:
+        card_id = request.json['cardId']
+        new_title = request.json['tempValue']
+        data_handler.rename_card(card_id, new_title)
+        return make_response('OK', 200)
+    except:
+        print('Card rename unsuccessful.')
+        return make_response('Card rename unsuccessful.', 500)
+
+
 @app.route('/api/board-first-status/<board_id>')
 @json_response
 def api_board_first_status(board_id):
@@ -158,6 +190,15 @@ def rename_card_title(card_id):
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
+
+
+@app.route('/update-statuses', methods=['POST'])
+def update_status_title():
+    req = request.get_json()
+    new_status_value = req['value']
+    status_id = int(req['status_id'])
+    data_handler.replace_status_column(status_id, new_status_value)
+    return make_response('Success', 200)
 
 
 if __name__ == '__main__':
