@@ -170,6 +170,7 @@ export let dom = {
 
 
     },
+
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
     },
