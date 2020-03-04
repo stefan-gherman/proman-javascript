@@ -44,6 +44,9 @@
                 <button type="button" class="btn " data-toggle="modal" data-target="#loginModal" id="nav3">
                     Login
                 </button>
+                <button type="button" class="btn" id="nav4">
+                    Refresh
+                </button>
             </div>
         </div>
     </nav>
@@ -63,6 +66,9 @@
                 <a href="/logout"><button type="button" class="btn " data-toggle="modal" data-target="#loginModal" id="nav2">
                     Logout
                 </button></a>
+                <button type="button" class="btn" id="nav4">
+                    Refresh
+                </button>
 
             </div>
         </div>
@@ -85,8 +91,13 @@
     <div id="topnav" class="navbar navbar-light bg-light">
         <h1>ProMan</h1>
         <button type="button" class="btn btn-light rounded border-secondary" data-toggle="modal" data-target="#exampleModalNewBoard" id="newBoardButton">
-            + New Board
+            + New Public Board
         </button>
+        {% if logged_in %}
+        <button type="button" class="btn btn-light rounded border-secondary" data-toggle="modal" data-target="#exampleModalNewPrivateBoard" id="newPrivateBoardButton">
+            + New Private Board
+        </button>
+        {% endif %}
     </div>
 </div>
 
@@ -117,6 +128,37 @@
         </div>
     </div>
 </div>
+
+{% if logged_in %}
+<div class="modal fade" id="exampleModalNewPrivateBoard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Private board title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action=" {{ url_for('create_private_new_board') }} " method="post">
+                    <div class="form-group">
+                        <label for="board-title" class="col-form-label">Title:</label>
+                        <input type="text" class="form-control" name="private-board-title" id="board-title" placeholder="Enter the title here">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div id="boards"></div>
 
 

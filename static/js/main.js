@@ -18,3 +18,11 @@ createRegisterModal();
 
 // calling login modal
 createLoginModal();
+
+let btnRefresh = document.getElementById('nav4');
+btnRefresh.addEventListener('click', function(){
+    let boardsContainer = document.querySelector('#boards');
+    boardsContainer.innerHTML='';
+    dom.loadBoards();
+    // location.reload();
+});
