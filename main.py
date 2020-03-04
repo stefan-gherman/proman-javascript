@@ -85,6 +85,11 @@ def create_private_new_board():
     return redirect(url_for('index'))
 
 
+@app.route('/archive-card/<card_id>')
+def archive_cards(card_id):
+    data_handler.archive_cards(card_id)
+    return redirect("/")
+
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
     board_id = request.json['board_id']
