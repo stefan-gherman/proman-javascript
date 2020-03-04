@@ -13,7 +13,7 @@ def get_card_status(status_id):
 
 
 @persistence.connection_handler
-def get_boards(cursor,logged_in):
+def get_boards(cursor, logged_in):
     """
     Gather all boards
     :return:
@@ -23,7 +23,7 @@ def get_boards(cursor,logged_in):
         cursor.execute(
             sql.SQL("SELECT * FROM {boards} WHERE owner = (%s);")
                 .format(
-                boards=sql.Identifier('boards')),[logged_in]
+                boards=sql.Identifier('boards')), [logged_in]
 
         )
     else:
@@ -101,7 +101,7 @@ def delete_board(cursor, board_id):
     cursor.execute(f'''
     DELETE FROM boards WHERE id={board_id}
 ''')
-    
+
 
 @persistence.connection_handler
 def create_private_new_board(cursor, board_title, logged_in):
@@ -187,7 +187,7 @@ def create_card(cursor, card_title, board_id, status_id):
 
 
 @persistence.connection_handler
-def rename_card_title(cursor, id, title):
+def rename_board_title(cursor, id, title):
     cursor.execute(
         f"""
         UPDATE boards
@@ -195,6 +195,7 @@ def rename_card_title(cursor, id, title):
         WHERE id = '{id}';
         """
     )
+
 
 @persistence.connection_handler
 def replace_status_column(cursor, status_id, title):
@@ -206,7 +207,7 @@ def replace_status_column(cursor, status_id, title):
         ), [title, status_id]
     )
 
-    
+
 @persistence.connection_handler
 def rename_card(cursor, card_id, new_title):
     cursor.execute(f"""
@@ -214,5 +215,3 @@ def rename_card(cursor, card_id, new_title):
         SET title = '{new_title}'
         WHERE id = {card_id};
 """)
-
-
