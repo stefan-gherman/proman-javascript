@@ -13,19 +13,27 @@ def get_card_status(status_id):
 
 
 @persistence.connection_handler
-def get_boards(cursor):
+def get_boards(cursor,logged_in):
     """
     Gather all boards
     :return:
     """
-    # return persistence.get_boards(force=True)
-    cursor.execute(
-        sql.SQL('SELECT * FROM {boards};')
-            .format(
-            boards=sql.Identifier('boards')
-        )
-    )
+    if logged_in:
+        # return persistence.get_boards(force=True)
+        cursor.execute(
+            sql.SQL("SELECT * FROM {boards} WHERE owner = (%s);")
+                .format(
+                boards=sql.Identifier('boards')),[logged_in]
 
+        )
+    else:
+        # return persistence.get_boards(force=True)
+        cursor.execute(
+            sql.SQL("SELECT * FROM {boards} WHERE owner='public';")
+                .format(
+                boards=sql.Identifier('boards')
+            )
+        )
     result = cursor.fetchall()
     return result
 
@@ -86,11 +94,21 @@ def create_new_board(cursor, board_title, owner_public='public'):
         VALUES ('{board_title}','{owner_public}');
 ''')
 
+
 @persistence.connection_handler
 def delete_board(cursor, board_id):
     cursor.execute(f'''
     DELETE FROM boards WHERE id={board_id}
 ''')
+    
+
+@persistence.connection_handler
+def create_private_new_board(cursor, board_title, logged_in):
+    cursor.execute(f'''
+        INSERT INTO boards (title, owner)
+        VALUES ('{board_title}','{logged_in}');
+''')
+
 
 @persistence.connection_handler
 def add_new_status(cursor, status_title, border_id):
@@ -143,7 +161,7 @@ def get_status_last_card_id(cursor, first_status_id):
 """)
     result = cursor.fetchone()
     if result is None:
-        return 0
+        return 1
     return result['id']
 
 
@@ -164,4 +182,13 @@ def create_card(cursor, card_title, board_id, status_id):
     cursor.execute(f"""
         INSERT INTO cards (title, board_id, status_id)
         VALUES ('{card_title}', {board_id}, {status_id});
+""")
+
+
+@persistence.connection_handler
+def rename_card(cursor, card_id, new_title):
+    cursor.execute(f"""
+        UPDATE cards
+        SET title = '{new_title}'
+        WHERE id = {card_id};
 """)

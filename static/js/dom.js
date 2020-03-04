@@ -137,47 +137,103 @@ export let dom = {
                     'content-type': 'application/json'
                   }),
                   body: JSON.stringify(dataToSend)
+            else {
+                button.addEventListener('click', async function (event) {
+                    let idForBoard = button.id.slice(6);
+                    console.log('idb', idForBoard);
+                    let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
+                    response = await response.json();
+                    //console.log(response);
+                    console.log('Pop Boards');
+                    let boardBody = document.getElementById(`${idForBoard}`);
+                    boardBody.innerHTML = '';
+
+                    for (let element of response) {
+                        console.log('Populating with the', element);
+                        createAppend(element);
+                        let columnResponse = await fetch(`${window.origin}/get-cards/${element.id}`);
+                        columnResponse = await columnResponse.json();
+                        let columnBody = document.getElementById(`column_tr_${element.id}`);
+                        columnBody.innerHTML = '';
+                        columnBody.innerText = element.title;
+                        for (let card of columnResponse) {
+                            // console.log(card);
+                            createAppendCard(card);
+                        }
+
+                        insertObjectInArray(columnBody, statusesDraggable);
+
+                    }
+                    markCardsForClickRename();
+                    console.log(statusesDraggable);
+                    let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
+                        el.dataset.card = target.id;
+                        el.dataset.board = target.dataset.board;
+                        let i = 0;
+                        if (source.length > 0) {
+                            for (let child of source.children) {
+
+                                child.dataset.order = i;
+                                i += 1;
+                                console.log(child, 'from source');
+                                let dataToSend = {
+                                    status_id: child.dataset.card.slice(10),
+                                    board_id: child.dataset.board,
+                                    column_order: child.dataset.order,
+                                    id: child.id.slice(5)
+                                };
+                                fetch(`${window.origin}/move`, {
+                                    method: 'POST',
+                                    credentials: "include",
+                                    cache: "no-cache",
+                                    headers: new Headers({
+                                        'content-type': 'application/json'
+                                    }),
+                                    body: JSON.stringify(dataToSend)
+                                });
+                            }
+                        }
+                        i = 0;
+                        for (let child of target.children) {
+                            child.dataset.order = i;
+                            i += 1;
+                            console.log(child, 'from target');
+                            let dataToSend = {
+                                status_id: child.dataset.card.slice(10),
+                                board_id: child.dataset.board,
+                                column_order: child.dataset.order,
+                                id: child.id.slice(5)
+                            };
+                            fetch(`${window.origin}/move`, {
+                                method: 'POST',
+                                credentials: "include",
+                                cache: "no-cache",
+                                headers: new Headers({
+                                    'content-type': 'application/json'
+                                }),
+                                body: JSON.stringify(dataToSend)
+                            });
+                        }
+
+                    });
+                    console.log(`Board event ${this.id} expanded`);
                 });
               }
             }
-            i = 0;
-            for (let child of target.children) {
-              child.dataset.order = i;
-              i += 1;
-              console.log(child, 'from target');
-              let dataToSend = {
-                status_id: child.dataset.card.slice(10),
-                board_id: child.dataset.board,
-                column_order: child.dataset.order,
-                id: child.id.slice(5)
-              };
-              fetch(`${window.origin}/move`, {
-                method: 'POST',
-                credentials: "include",
-                cache: "no-cache",
-                headers: new Headers({
-                  'content-type': 'application/json'
-                }),
-                body: JSON.stringify(dataToSend)
-              });
-            }
-            
-          });
-          console.log(`Board event ${this.id} expanded`);
-        });
-      }
-    }
-    
-  },
-  loadCards: function (boardId) {
-    // retrieves cards and makes showCards called
-  },
-  showCards: function (cards) {
-    // shows the cards of a board
-    // it adds necessary event listeners also
-  },
-  // here comes more features
-  
+        }
+
+
+    },
+
+    loadCards: function (boardId) {
+        // retrieves cards and makes showCards called
+    },
+    showCards: function (cards) {
+        // shows the cards of a board
+        // it adds necessary event listeners also
+    },
+    // here comes more features
+
 };
 
 function createAppend(element) {
@@ -202,7 +258,7 @@ function createAppendCard(element) {
   if (columnBody) {
     let cardBody = document.createElement('div');
     cardBody.setAttribute('class', 'col-md');
-    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px;');
+    cardBody.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
     cardBody.setAttribute('id', `card_${element.id}`);
     cardBody.setAttribute('data-card', `${columnBody.id}`);
     cardBody.setAttribute('data-board', columnBody.dataset.board);
@@ -346,34 +402,84 @@ function refreshloginModal() {
 }
 
 function handleNewCardClick(event) {
-  let board_id = event.target.id.slice(21);
-  let card_title = 'New Card';
-  let data = {board_id, card_title};
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  };
-  fetch('http://127.0.0.1:5000/api/create-card', options);
-  // Artificial temporary visual update, must change before card edit
-  fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
-    .then(response => response.json())
-    .then(function (data) {
-      console.log('data ', data);
-      let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
-      let tempCard = document.createElement('div');
-      tempCard.setAttribute('class', 'col-md');
-      tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px;');
-      tempCard.setAttribute('id', `card_${data.last_card_id}`);
-      tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-      tempCard.setAttribute('data-board', `${board_id}`);
-      tempCard.setAttribute('data-order', `${data.last_card_order}`);
-      tempCard.innerText += `${card_title}`;
-      console.log('temp card     ', tempCard);
-      tempColumn.appendChild(tempCard);
+    let board_id = event.target.id.slice(21);
+    let card_title = 'New Card';
+    let data = {board_id, card_title};
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    fetch('http://127.0.0.1:5000/api/create-card', options);
+    // Artificial temporary visual update, must change before card edit
+    fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
+        .then(response => response.json())
+        .then(function(data) {
+        console.log('data ', data);
+        let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
+        let tempCard = document.createElement('div');
+        tempCard.setAttribute('class', 'col-md');
+        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
+        tempCard.setAttribute('id', `card_${data.last_card_id}`);
+        tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+        tempCard.setAttribute('data-board', `${board_id}`);
+        tempCard.setAttribute('data-order', `${data.last_card_order}`);
+        tempCard.innerText += `${card_title}`;
+        console.log('temp card     ', tempCard);
+        tempColumn.appendChild(tempCard);
     });
+}
+
+function markCardsForClickRename() {
+    let allCards = document.getElementsByClassName("col-md");
+    console.log('cards= ', allCards);
+    for (let card of allCards) {
+        if (card.id.includes('card_')) {
+            card.addEventListener('click', handleCardClickRename);
+            card.addEventListener('keydown', handleCardRenameKeyPressed);
+            card.addEventListener('change', handleCardRenameChange)
+        }
+    }
+}
+
+function handleCardRenameChange(event) {
+    event.currentTarget.innerHTML = event.target.defaultValue;
+}
+
+function handleCardClickRename(event) {
+    console.log('entered card click rename');
+    console.log('click rename event:', event.toElement.innerHTML);
+    event.toElement.innerHTML = `
+            <input type="text" value="${event.toElement.innerHTML}">
+    `;
+}
+
+function handleCardRenameKeyPressed(event) {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.target.defaultValue = event.target.value;
+        console.log(event.target.value);
+        console.log(event.target);
+        let tempValue = event.target.value;
+        event.currentTarget.innerHTML = tempValue;
+        console.log('post replacement ', event.target);
+        let cardId = event.currentTarget.id.slice(5)
+        console.log('parent_id card id ', event.currentTarget.id )
+        console.log(cardId);
+        let data = {cardId, tempValue};
+        const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+        };
+        fetch(`http://127.0.0.1:5000/api/rename-card/${cardId}`, options);
+    }
+    else if (event.which == 27 || event.keyCode == 27) {
+        event.currentTarget.innerHTML = event.target.defaultValue;
+    }
 }
 
 function handleDeleteClick(event) {
@@ -389,6 +495,4 @@ function handleDeleteClick(event) {
   };
   
   fetch('http://127.0.0.1:5000/api/delete-board', option).then(location.reload())
-  
-  
 }
