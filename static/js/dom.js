@@ -103,7 +103,7 @@ export let dom = {
             columnResponse = await columnResponse.json();
             let columnBody = document.getElementById(`column_tr_${element.id}`);
             columnBody.innerHTML = '';
-            columnBody.innerText = element.title;
+            // columnBody.innerText = element.title;
             for (let card of columnResponse) {
               // console.log(card);
               createAppendCard(card);
