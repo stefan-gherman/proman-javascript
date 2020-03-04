@@ -100,37 +100,8 @@ export let dom = {
                         columnResponse = await columnResponse.json();
                         let columnBody = document.getElementById(`column_tr_${element.id}`);
                         columnBody.innerHTML = '';
-                        let title = document.createElement('p');
-                        title.setAttribute('id', `title_board${element.id}`);
-                        title.innerText = `${element.title}`;
-                        title.setAttribute('style', 'cursor:pointer;');
-                        title.setAttribute('contenteditable', 'true');
-                        title.addEventListener('focusout', function (event) {
-
-                            console.log(title.innerText);
-                            const value = title.innerText;
-
-                            const status_id = title.id.slice(11);
-
-                            const dataToSend = {
-                                value: value,
-                                status_id: status_id
-                            };
-
-                            fetch(`${window.origin}/update-statuses`, {
-                                method: 'POST',
-                                credentials: "include",
-                                cache: "no-cache",
-                                headers: new Headers({
-                                    'content-type': 'application/json'
-                                }),
-                                body: JSON.stringify(dataToSend)
-                            });
-
-                        });
 
 
-                        columnBody.appendChild(title);
 
                         for (let card of columnResponse) {
                             // console.log(card);
@@ -142,15 +113,37 @@ export let dom = {
                     }
                     console.log(statusesDraggable);
                     let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
-                        el.dataset.card = target.id;
-                        el.dataset.board = target.dataset.board;
-                        let i = 0;
-                        if (source.length > 0) {
-                            for (let child of source.children) {
+                            el.dataset.card = target.id;
+                            el.dataset.board = target.dataset.board;
+                            let i = 0;
+                            if (source.length > 0) {
+                                for (let child of source.children) {
 
+                                    child.dataset.order = i;
+                                    i += 1;
+                                    console.log(child, 'from source');
+                                    let dataToSend = {
+                                        status_id: child.dataset.card.slice(10),
+                                        board_id: child.dataset.board,
+                                        column_order: child.dataset.order,
+                                        id: child.id.slice(5)
+                                    };
+                                    fetch(`${window.origin}/move`, {
+                                        method: 'POST',
+                                        credentials: "include",
+                                        cache: "no-cache",
+                                        headers: new Headers({
+                                            'content-type': 'application/json'
+                                        }),
+                                        body: JSON.stringify(dataToSend)
+                                    });
+                                }
+                            }
+                            i = 0;
+                            for (let child of target.children) {
                                 child.dataset.order = i;
                                 i += 1;
-                                console.log(child, 'from source');
+                                console.log(child, 'from target');
                                 let dataToSend = {
                                     status_id: child.dataset.card.slice(10),
                                     board_id: child.dataset.board,
@@ -167,28 +160,6 @@ export let dom = {
                                     body: JSON.stringify(dataToSend)
                                 });
                             }
-                        }
-                        i = 0;
-                        for (let child of target.children) {
-                            child.dataset.order = i;
-                            i += 1;
-                            console.log(child, 'from target');
-                            let dataToSend = {
-                                status_id: child.dataset.card.slice(10),
-                                board_id: child.dataset.board,
-                                column_order: child.dataset.order,
-                                id: child.id.slice(5)
-                            };
-                            fetch(`${window.origin}/move`, {
-                                method: 'POST',
-                                credentials: "include",
-                                cache: "no-cache",
-                                headers: new Headers({
-                                    'content-type': 'application/json'
-                                }),
-                                body: JSON.stringify(dataToSend)
-                            });
-                        }
 
                     });
                     console.log(`Board event ${this.id} expanded`);
@@ -209,17 +180,54 @@ export let dom = {
 };
 
 function createAppend(element) {
-    let boardBody = document.getElementById(`${element.board_id}`)
+    let boardBody = document.getElementById(`${element.board_id}`);
+    let columnHolder = document.createElement('div');
+    columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table');
+    columnHolder.setAttribute('class', 'col-md text-center');
     let column = document.createElement('div');
     column.setAttribute('class', 'col-md text-center');
     // let column_tr = document.createElement('p');
     // column.setAttribute('class', 'col-sm');
-    column.setAttribute('style', 'margin:10px; border: 2px solid black; display: table');
-    // column.setAttribute('style', 'display: block;')
+    // column.setAttribute('style', 'border : 2px solid yellow');
+    column.setAttribute('min-height', '10px');
+    column.setAttribute('min-width', '10px');
+    column.setAttribute('style', 'display: block; border: 2px solid white');
     column.setAttribute('id', `column_${element.id}`);
     column.setAttribute('id', `column_tr_${element.id}`);
     column.setAttribute('data-board', element.board_id);
-    boardBody.appendChild(column);
+    let title = document.createElement('span');
+    title.setAttribute('id', `title_board${element.id}`);
+    title.setAttribute('class', `non_draggable`);
+    title.innerText = `${element.title}`;
+    title.setAttribute('style', 'cursor:pointer;');
+    title.setAttribute('contenteditable', 'true');
+    title.addEventListener('focusout', function (event) {
+
+        console.log(title.innerText);
+        const value = title.innerText;
+
+        const status_id = title.id.slice(11);
+
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+
+    });
+
+    columnHolder.appendChild(title);
+    columnHolder.appendChild(column);
+    boardBody.appendChild(columnHolder);
     // boardBody.appendChild(column_tr);
 
 }
