@@ -35,8 +35,10 @@ function handleBoardTitleOnKeyPress(event) {
 
 function handleBoardTitle(event) {
     event.target.innerHTML = `
-    <input type="text" class="form-control" id="board-rename-input" autofocus 
+    <input type="text" class="form-control" id="board-rename-input" 
     value="${event.target.textContent.trim()}">`
+    document.querySelector('#board-rename-input').focus();
+
 }
 
 
