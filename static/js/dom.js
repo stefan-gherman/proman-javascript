@@ -33,7 +33,7 @@ export let dom = {
                     <p>
                         <div class="navbar navbar-light bg-light rounded border">
                             <div class="d-flex flex-row">
-                              <div id="board-title" class="navbar navbar-light bg-light" data-board-id = "${board.id}" data-board-title="${board.title}" data-toggle="collapse" href=""  role="button" aria-expanded="false" aria-controls="collapseExample">
+                              <div id="board-title" class="navbar navbar-light bg-light" data-board-id = "${board.id}" data-board-title="${board.title}">
                                 ${board.title}
                               </div>
                               <button type="button" class="btn btn-light mr-1 rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
