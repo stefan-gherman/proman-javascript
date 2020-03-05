@@ -21,9 +21,9 @@ def get_boards(cursor, logged_in):
     if logged_in:
         # return persistence.get_boards(force=True)
         cursor.execute(
-            sql.SQL("SELECT * FROM {boards} WHERE owner = (%s) ORDER BY id;")
+            sql.SQL("SELECT * FROM {boards} WHERE owner = (%s) OR owner=(%s) ORDER BY id;")
                 .format(
-                boards=sql.Identifier('boards')), [logged_in]
+                boards=sql.Identifier('boards')), [logged_in, 'public']
 
         )
     else:
