@@ -1,3 +1,5 @@
+import {refreshBoards} from "./main.js";
+
 export function createAppendCard(element) {
     let columnBody = document.getElementById(`column_tr_${element.status_id}`);
     if (columnBody) {
@@ -76,8 +78,8 @@ export function handleNewCardClick(event) {
 
         markCardsForClickRename();
         markCardsDeleteButton();
+        refreshBoards();
     });
-
 }
 
 

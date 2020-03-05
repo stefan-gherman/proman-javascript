@@ -18,6 +18,11 @@ function init() {
     // refreshes boards every n seconds
     setInterval(function() {
         refreshBoards();}, 8000);
+    setInterval(function() {
+        let boardsContainer = document.querySelector('#boards');
+        boardsContainer.innerHTML='';
+        dom.loadBoards();
+        refreshBoards();}, 30000);
 
 }
 
