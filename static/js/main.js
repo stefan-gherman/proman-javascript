@@ -1,8 +1,9 @@
 import {dom} from "./dom.js";
 import {createRegisterModal, createLoginModal, renameModal} from "./login_modals.js";
+import { populateBoard } from "./board_module.js";
 
 
-    if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register("/sw.js", {scope: '/'})
             .then((reg) => console.log('registered', reg))
             .catch((err) => console.log('does not work', err))
@@ -47,18 +48,12 @@ export function refreshBoards() {
         }
         if (expandButton === 'collapse show') {
             console.log('already collapsed');
+            populateBoard(board);
         } else if (expandButton === 'collapse'){
             document.getElementById(`board_${board}`).click();
         }
-
-        // .click();
     }
-
-
     localStorage.setItem('expandedBoards', expandedBoardsString);
-    // let boardsContainer = document.querySelector('#boards');
-    // boardsContainer.innerHTML='';
-    // dom.loadBoards();
 }
 
 let btnRefresh = document.getElementById('nav4');
@@ -66,7 +61,7 @@ btnRefresh.addEventListener('click', function(){
     let boardsContainer = document.querySelector('#boards');
     boardsContainer.innerHTML='';
     dom.loadBoards();
-    // location.reload();
+    refreshBoards();
 });
 
 
