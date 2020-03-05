@@ -67,14 +67,14 @@ def create_new_board():
     data_handler.create_new_board(board_title)
     return redirect(url_for('index'))
 
-  
+
 @app.route('/api/delete-board', methods=['POST'])
 def delete_board():
     board_id = request.json['board_id']
     data_handler.delete_board(board_id)
     return redirect("/")
-  
-  
+
+
 @app.route("/api/create-private-board", methods=['GET', 'POST'])
 def create_private_new_board():
     logged_in = None
@@ -90,6 +90,7 @@ def archive_cards(card_id):
     data_handler.archive_cards(card_id)
     return redirect("/")
 
+
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
     board_id = request.json['board_id']
@@ -99,7 +100,7 @@ def create_status():
 
 
 def main():
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True)
 
     # Serving the favicon
     with app.app_context():
@@ -207,6 +208,11 @@ def update_status_title():
     status_id = int(req['status_id'])
     data_handler.replace_status_column(status_id, new_status_value)
     return make_response('Success', 200)
+
+
+@app.route('/sw.js', methods=['GET'])
+def sw():
+    return app.send_static_file('sw.js')
 
 
 if __name__ == '__main__':

@@ -2,6 +2,11 @@ import {dom} from "./dom.js";
 import {createRegisterModal, createLoginModal, renameModal} from "./login_modals.js";
 
 
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register("/sw.js", {scope: '/'})
+            .then((reg) => console.log('registered', reg))
+            .catch((err) => console.log('does not work', err))
+    }
 
 // This function is to initialize the application
 function init() {
@@ -14,6 +19,7 @@ function init() {
     //     refreshBoards();}, 8000);
 
 }
+
 
 init();
 

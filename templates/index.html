@@ -20,11 +20,12 @@
     <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js' defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
-    <script type="module" src="{{ url_for('static', filename='js/main.js')}}" defer></script>
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <script type="module" src="{{ url_for('static', filename='js/main.js')}}" defer></script>
      <!-- ios support -->
     <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'images/icons/icon-96x96.png') }}">
-    <meta name="apple-mobile-web-app-status-bar" content="##8fa2b1">
+    <meta name="apple-mobile-web-app-status-bar" content="#8fa2b1">
+    <meta name="theme-color" content="#fff"/>
 </head>
 <body>
 
@@ -183,6 +184,7 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 <script src="{{ url_for('static', filename="js/form.js") }}"></script>
+
 
 </body>
 </html>
