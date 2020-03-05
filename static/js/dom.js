@@ -1,6 +1,6 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
-import { createAppendCard, handleNewCardClick, handleCardRenameKeyPressed, handleCardClickRename, handleCardRenameChange } from "./card_module.js";
+import { createAppendCard, handleNewCardClick, markCardsForClickRename, markCardsDeleteButton } from "./card_module.js";
 import { addEventClickBoardTitle, handleDeleteClick, expandedBoardsLocalList } from "./board_module.js"
 import { handleNewStatusClick } from "./status_module.js"
 
