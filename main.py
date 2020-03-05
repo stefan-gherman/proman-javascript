@@ -84,11 +84,21 @@ def create_private_new_board():
     data_handler.create_private_new_board(private_board_title, logged_in)
     return redirect(url_for('index'))
 
+@app.route('/api/view-archive/<board_id>')
+def view_archive(board_id):
+    data = data_handler.view_archive(board_id)
+    return jsonify(data)
+
 
 @app.route('/archive-card/<card_id>')
 def archive_cards(card_id):
     data_handler.archive_cards(card_id)
     return redirect("/")
+
+@app.route('/api/undo-archive/<card_id>')
+def undo_archive(card_id):
+    data_handler.undo_archive(card_id)
+    return redirect('/')
 
 @app.route('/api/create-status', methods=['POST'])
 def create_status():

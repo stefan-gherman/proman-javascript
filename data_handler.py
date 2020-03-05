@@ -108,11 +108,28 @@ def create_private_new_board(cursor, board_title, logged_in):
     cursor.execute(f'''
         INSERT INTO boards (title, owner)
         VALUES ('{board_title}','{logged_in}');
+''')
+
 @persistence.connection_handler
 def archive_cards(cursor, card_id, option=True):
     cursor.execute(f'''
     UPDATE cards SET archive = {option} WHERE id = {card_id}
 ''')
+
+@persistence.connection_handler
+def view_archive(cursor, board_id):
+    cursor.execute(f'''
+    SELECT * FROM cards WHERE board_id ={board_id} and archive = True;
+''')
+    result = cursor.fetchall()
+    return result
+
+@persistence.connection_handler
+def undo_archive(cursor, card_id, option=False):
+    cursor.execute(f'''
+    UPDATE cards SET archive = {option} WHERE id = {card_id}; 
+''')
+
 
 
 @persistence.connection_handler
