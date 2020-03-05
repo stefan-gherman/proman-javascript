@@ -190,15 +190,15 @@ function createAppend(element) {
     column.setAttribute('data-board', element.board_id);
     let title = document.createElement('span');
     title.setAttribute('id', `title_board${element.id}`);
-    title.setAttribute('class', `no-draggable`);
+    title.setAttribute('class', `non_draggable`);
     title.innerText = `${element.title}`;
-    title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed; ');
+    title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed; display:inline-block; ');
     title.setAttribute('contenteditable', 'true');
     title.setAttribute('title', `${element.title}`);
     title.setAttribute('tabIndex', '-1');
     console.log(title.title);
     title.addEventListener('focus', function(event){
-        event.currentTarget.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed; box-shadow: 0 0 8px #9ecaed')
+        title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed; box-shadow: 0 0 8px #9ecaed')
     });
     title.addEventListener('focusout', function (event) {
         console.log(title.innerText);
@@ -224,7 +224,7 @@ function createAppend(element) {
             body: JSON.stringify(dataToSend)
         });
         title.blur();
-         title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed')
+         title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
     });
     title.addEventListener('keydown', function(event){
         console.log(event.key);
@@ -233,7 +233,7 @@ function createAppend(element) {
         if (event.key === 'Escape'){
             title.innerHTML = title.title;
             title.blur();
-            title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed')
+            title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
         } else if (event.key === 'Enter'){
              console.log(title.innerText);
              title.innerText = title.innerText.trim();
@@ -260,7 +260,7 @@ function createAppend(element) {
             }),
             body: JSON.stringify(dataToSend)
         });
-         title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed')
+         title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
         }
     });
     columnHolder.appendChild(title);
