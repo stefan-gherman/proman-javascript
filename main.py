@@ -67,14 +67,14 @@ def create_new_board():
     data_handler.create_new_board(board_title)
     return redirect(url_for('index'))
 
-  
+
 @app.route('/api/delete-board', methods=['POST'])
 def delete_board():
     board_id = request.json['board_id']
     data_handler.delete_board(board_id)
     return redirect("/")
-  
-  
+
+
 @app.route("/api/create-private-board", methods=['GET', 'POST'])
 def create_private_new_board():
     logged_in = None
@@ -95,10 +95,12 @@ def archive_cards(card_id):
     data_handler.archive_cards(card_id)
     return redirect("/")
 
+
 @app.route('/api/undo-archive/<card_id>')
 def undo_archive(card_id):
     data_handler.undo_archive(card_id)
     return redirect('/')
+
 
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
@@ -228,6 +230,35 @@ def update_status_title():
     status_id = int(req['status_id'])
     data_handler.replace_status_column(status_id, new_status_value)
     return make_response('Success', 200)
+
+
+@app.route('/sw.js', methods=['GET'])
+def sw():
+    return app.send_static_file('sw.js')
+
+
+@app.route('/bootstrap-4.3.1-dist/css/bootstrap.css', methods=['GET'])
+def return_bootstrap_css():
+    return app.send_static_file('bootstrap-4.3.1-dist/css/bootstrap.css')
+
+
+@app.route('/bootstrap-4.3.1-dist/js/bootstrap.js', methods=['GET'])
+def return_bootstrap_js():
+    return app.send_static_file('bootstrap-4.3.1-dist/js/bootstrap.js')
+
+
+@app.route('/js/main.js', methods=['GET'])
+def return_main_js():
+    return app.send_static_file('js/main.js')
+
+
+@app.route('/js/dom.js', methods=['GET'])
+def return_dom_js():
+    return app.send_static_file('js/dom.js')
+
+@app.route('/offline_page', methods=['GET'])
+def return_offline_page():
+    return app.send_static_file('offline_page.html')
 
 
 if __name__ == '__main__':

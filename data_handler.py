@@ -132,7 +132,6 @@ def undo_archive(cursor, card_id, option=False):
 ''')
 
 
-
 @persistence.connection_handler
 def add_new_status(cursor, status_title, border_id):
     query = "INSERT INTO statuses (title, board_id) VALUES (%s, %s);"

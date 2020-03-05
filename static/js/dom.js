@@ -5,6 +5,7 @@ import { addEventClickBoardTitle, handleDeleteClick, expandedBoardsLocalList } f
 import { handleNewStatusClick } from "./status_module.js"
 
 
+
 let triggered = false;
 let statusesDraggable = [];
 export let dom = {
@@ -22,7 +23,13 @@ export let dom = {
     
     
   },
-  
+
+  returnOfflineContent: async function() {
+
+
+
+  },
+
   showBoards: function (boards) {
     // shows boards appending them to #boards div
     // it adds necessary event listeners also
@@ -197,43 +204,132 @@ export let dom = {
 };
 
 function createAppend(element) {
-  let boardBody = document.getElementById(`${element.board_id}`);
-  let columnHolder = document.createElement('div');
-  columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table; padding: 1px');
-  columnHolder.setAttribute('class', 'col-md text-center');
-  let column = document.createElement('div');
-  column.setAttribute('class', 'col-md text-center');
-  column.setAttribute('min-height', '10px');
-  column.setAttribute('min-width', '10px');
-  column.setAttribute('style', 'display: table; border: 2px solid white');
-  column.setAttribute('id', `column_${element.id}`);
-  column.setAttribute('id', `column_tr_${element.id}`);
-  column.setAttribute('data-board', element.board_id);
-  let title = document.createElement('p');
-  title.setAttribute('id', `title_board${element.id}`);
-  title.setAttribute('class', `non_draggable`);
-  title.innerText = `${element.title}`;
-  title.setAttribute('style', 'cursor:pointer;');
-  title.setAttribute('contenteditable', 'true');
-  title.setAttribute('title', `${element.title}`);
-  console.log(title.title);
-  title.addEventListener('focusout', function (event) {
-    console.log(title.innerText);
-    title.title = title.innerHTML;
-    const value = title.innerText;
-    const status_id = title.id.slice(11);
-    const dataToSend = {
-      value: value,
-      status_id: status_id
-    };
-    fetch(`${window.origin}/update-statuses`, {
-      method: 'POST',
-      credentials: "include",
-      cache: "no-cache",
-      headers: new Headers({
-        'content-type': 'application/json'
-      }),
-      body: JSON.stringify(dataToSend)
+
+    let boardBody = document.getElementById(`${element.board_id}`);
+    let columnHolder = document.createElement('div');
+    columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table; padding: 1px');
+    columnHolder.setAttribute('class', 'col-md text-center');
+    let column = document.createElement('div');
+    column.setAttribute('class', 'col-md text-center');
+    column.setAttribute('min-height', '10px');
+    column.setAttribute('min-width', '10px');
+    column.setAttribute('style', 'display: table; border: 2px solid white');
+    column.setAttribute('id', `column_${element.id}`);
+    column.setAttribute('id', `column_tr_${element.id}`);
+    column.setAttribute('data-board', element.board_id);
+    let title = document.createElement('span');
+    title.setAttribute('id', `title_board${element.id}`);
+    title.setAttribute('class', `non_draggable`);
+    title.innerText = `${element.title}`;
+    title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed; display:inline-block; ');
+    title.setAttribute('contenteditable', 'true');
+    title.setAttribute('title', `${element.title}`);
+    title.setAttribute('tabIndex', '-1');
+    console.log(title.title);
+    title.addEventListener('focus', function(event){
+        title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed; box-shadow: 0 0 8px #9ecaed')
+    });
+    title.addEventListener('focusout', function (event) {
+        console.log(title.innerText);
+        title.innerText = title.innerText.trim();
+        if(title.innerText.trim() === '') {
+            title.innerText = title.title;
+            title.blur();
+        }
+        title.title = title.innerHTML;
+        const value = title.innerText;
+        const status_id = title.id.slice(11);
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+        title.blur();
+         title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
+    });
+    title.addEventListener('keydown', function(event){
+        console.log(event.key);
+        console.log(this.title);
+        let titleInitialValue = title.title;
+        if (event.key === 'Escape'){
+            title.innerHTML = title.title;
+            title.blur();
+            title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
+        } else if (event.key === 'Enter'){
+             console.log(title.innerText);
+             title.innerText = title.innerText.trim();
+             if (title.innerText.trim() === ''){
+                 title.innerText=title.title
+             }
+
+        title.title = title.innerHTML;
+        const value = title.innerText;
+
+        const status_id = title.id.slice(11);
+
+        const dataToSend = {
+            value: value,
+            status_id: status_id
+        };
+        title.blur();
+        fetch(`${window.origin}/update-statuses`, {
+            method: 'POST',
+            credentials: "include",
+            cache: "no-cache",
+            headers: new Headers({
+                'content-type': 'application/json'
+            }),
+            body: JSON.stringify(dataToSend)
+        });
+         title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
+        }
+// =======
+//   let boardBody = document.getElementById(`${element.board_id}`);
+//   let columnHolder = document.createElement('div');
+//   columnHolder.setAttribute('style', 'margin: 10px; border: 2px solid black; display:table; padding: 1px');
+//   columnHolder.setAttribute('class', 'col-md text-center');
+//   let column = document.createElement('div');
+//   column.setAttribute('class', 'col-md text-center');
+//   column.setAttribute('min-height', '10px');
+//   column.setAttribute('min-width', '10px');
+//   column.setAttribute('style', 'display: table; border: 2px solid white');
+//   column.setAttribute('id', `column_${element.id}`);
+//   column.setAttribute('id', `column_tr_${element.id}`);
+//   column.setAttribute('data-board', element.board_id);
+//   let title = document.createElement('p');
+//   title.setAttribute('id', `title_board${element.id}`);
+//   title.setAttribute('class', `non_draggable`);
+//   title.innerText = `${element.title}`;
+//   title.setAttribute('style', 'cursor:pointer;');
+//   title.setAttribute('contenteditable', 'true');
+//   title.setAttribute('title', `${element.title}`);
+//   console.log(title.title);
+//   title.addEventListener('focusout', function (event) {
+//     console.log(title.innerText);
+//     title.title = title.innerHTML;
+//     const value = title.innerText;
+//     const status_id = title.id.slice(11);
+//     const dataToSend = {
+//       value: value,
+//       status_id: status_id
+//     };
+//     fetch(`${window.origin}/update-statuses`, {
+//       method: 'POST',
+//       credentials: "include",
+//       cache: "no-cache",
+//       headers: new Headers({
+//         'content-type': 'application/json'
+//       }),
+//       body: JSON.stringify(dataToSend)
+//=============================
     });
   });
   title.addEventListener('keydown', function (event) {
@@ -294,39 +390,6 @@ const insertObjectInArray = (elem, arr) => {
   }
 };
 
-
-// function handleNewColumnclick(event) {
-//   let board_id = event.target.id.slice(23);
-//   let inputsColumnName = document.querySelectorAll("input");
-//   for (let input of inputsColumnName) {
-//     input.addEventListener('change', function (event) {
-//       console.log('input value', event.target.value);
-//       let status_title = event.target.value;
-//       let data = {board_id, status_title};
-//       const options = {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(data)
-//       };
-//       fetch('http://127.0.0.1:5000/api/create-status', options).then(() => location.reload());
-//     });
-//   }
-// }
-
-
-// function markCardsForClickRename() {
-//   let allCards = document.getElementsByClassName("col-md");
-//   console.log('cards= ', allCards);
-//   for (let card of allCards) {
-//     if (card.id.includes('card_')) {
-//       card.addEventListener('click', handleCardClickRename);
-//       card.addEventListener('keydown', handleCardRenameKeyPressed);
-//       card.addEventListener('change', handleCardRenameChange)
-//     }
-//   }
-// }
 
 function handleViewArchive(event) {
   let board_id = event.currentTarget.id.slice(17);
