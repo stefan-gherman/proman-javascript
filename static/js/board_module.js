@@ -1,7 +1,6 @@
 export function addEventClickBoardTitle() {
     let allBoardsTitle = document.querySelectorAll('#board-title');
     for (let boardTitle of allBoardsTitle) {
-
         if (boardTitle.id.includes('board-title')) {
             boardTitle.addEventListener('click', handleBoardTitle);
             boardTitle.addEventListener('keydown', handleBoardTitleOnKeyPress);
@@ -11,15 +10,15 @@ export function addEventClickBoardTitle() {
 
 
 function handleBoardTitleOnKeyPress(event) {
-    console.log(event.target)
     if (event.which == 13 || event.keyCode == 13) {
-        // event.target.defaultValue = event.target.value;
         let tempValue = event.target.value;
-        console.log(event.target.textContent.trim())
         if (tempValue.trim() === '') {
-            console.log("tempval" + tempValue)
             tempValue = event.target.defaultValue;
         }
+        if (tempValue === '') {
+            tempValue = event.currentTarget.dataset.boardTitle;
+        }
+        event.currentTarget.setAttribute('data-board-title', `${tempValue}`);
         event.currentTarget.innerHTML = tempValue;
         let boardId = event.currentTarget.dataset.boardId;
         let data = {boardId: boardId, tempValue: tempValue};
@@ -28,9 +27,8 @@ function handleBoardTitleOnKeyPress(event) {
             body: JSON.stringify(data)
         };
         fetch(`http://127.0.0.1:5000/api/rename-board-title/${boardId}`, options);
-
     } else if (event.which == 27 || event.keyCode == 27) {
-        event.currentTarget.innerHTML = event.target.defaultValue;;
+        event.currentTarget.innerHTML = event.target.defaultValue;
     }
 }
 
@@ -39,7 +37,6 @@ function handleBoardTitle(event) {
     event.target.innerHTML = `
     <input type="text" class="form-control" id="board-rename-input" autofocus 
     value="${event.target.textContent.trim()}">`
-
 }
 
 
