@@ -1,13 +1,9 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
-import {
-  createAppendCard,
-  handleNewCardClick,
-  handleCardRenameKeyPressed,
-  handleCardClickRename,
-  handleCardRenameChange
-} from "./card_module.js";
-import { addEventClickBoardTitle, handleDeleteClick } from "./board_module.js"
+import { createAppendCard, handleNewCardClick, handleCardRenameKeyPressed, handleCardClickRename, handleCardRenameChange } from "./card_module.js";
+import { addEventClickBoardTitle, handleDeleteClick, expandedBoardsLocalList } from "./board_module.js"
+import { handleNewStatusClick } from "./status_module.js"
+
 
 let triggered = false;
 let statusesDraggable = [];
@@ -39,7 +35,7 @@ export let dom = {
                     <p>
                         <div class="navbar navbar-light bg-light rounded border">
                             <div class="d-flex flex-row">
-                              <div id="card-title" class="navbar navbar-light bg-light" data-board-id = "${board.id}" data-board-title="${board.title}" data-toggle="collapse" href=""  role="button" aria-expanded="false" aria-controls="collapseExample">
+                              <div id="board-title" class="navbar navbar-light bg-light" data-board-id = "${board.id}" data-board-title="${board.title}">
                                 ${board.title}
                               </div>
                               <button type="button" class="btn btn-light mr-1 rounded border-secondary" id="buttonNewCardForBoard${board.id}">+ New Card</button>
@@ -98,7 +94,7 @@ export let dom = {
       if (button.id.slice(0, 21) === 'buttonNewCardForBoard') {
         button.addEventListener('click', handleNewCardClick);
       } else if (button.id.includes('buttonNewStatusForBoard')) {
-        button.addEventListener('click', handleNewColumnclick);
+        button.addEventListener('click', handleNewStatusClick);
       } else if (button.id.includes('buttonDeleteCardForBoard')) {
         button.addEventListener('click', handleDeleteClick);
       } else if (button.id.includes('buttonViewArchive')) {
@@ -109,13 +105,14 @@ export let dom = {
         button.addEventListener('click', async function (event) {
           let idForBoard = button.id.slice(6);
           console.log('idb', idForBoard);
+          expandedBoardsLocalList(idForBoard);
           let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
           response = await response.json();
           //console.log(response);
           console.log('Pop Boards');
           let boardBody = document.getElementById(`${idForBoard}`);
           boardBody.innerHTML = '';
-          
+
           for (let element of response) {
             console.log('Populating with the', element);
             createAppend(element);
@@ -129,7 +126,8 @@ export let dom = {
               createAppendCard(card);
             }
             insertObjectInArray(columnBody, statusesDraggable);
-            markCardsForClickRename()
+            markCardsForClickRename();
+            markCardsDeleteButton();
           }
           console.log(statusesDraggable);
           let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
@@ -296,38 +294,39 @@ const insertObjectInArray = (elem, arr) => {
   }
 };
 
-function handleNewColumnclick(event) {
-  let board_id = event.target.id.slice(23);
-  let inputsColumnName = document.querySelectorAll("input");
-  for (let input of inputsColumnName) {
-    input.addEventListener('change', function (event) {
-      console.log('input value', event.target.value);
-      let status_title = event.target.value;
-      let data = {board_id, status_title};
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      };
-      fetch('http://127.0.0.1:5000/api/create-status', options).then(() => location.reload());
-    });
-  }
-}
+
+// function handleNewColumnclick(event) {
+//   let board_id = event.target.id.slice(23);
+//   let inputsColumnName = document.querySelectorAll("input");
+//   for (let input of inputsColumnName) {
+//     input.addEventListener('change', function (event) {
+//       console.log('input value', event.target.value);
+//       let status_title = event.target.value;
+//       let data = {board_id, status_title};
+//       const options = {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(data)
+//       };
+//       fetch('http://127.0.0.1:5000/api/create-status', options).then(() => location.reload());
+//     });
+//   }
+// }
 
 
-function markCardsForClickRename() {
-  let allCards = document.getElementsByClassName("col-md");
-  console.log('cards= ', allCards);
-  for (let card of allCards) {
-    if (card.id.includes('card_')) {
-      card.addEventListener('click', handleCardClickRename);
-      card.addEventListener('keydown', handleCardRenameKeyPressed);
-      card.addEventListener('change', handleCardRenameChange)
-    }
-  }
-}
+// function markCardsForClickRename() {
+//   let allCards = document.getElementsByClassName("col-md");
+//   console.log('cards= ', allCards);
+//   for (let card of allCards) {
+//     if (card.id.includes('card_')) {
+//       card.addEventListener('click', handleCardClickRename);
+//       card.addEventListener('keydown', handleCardRenameKeyPressed);
+//       card.addEventListener('change', handleCardRenameChange)
+//     }
+//   }
+// }
 
 function handleViewArchive(event) {
   let board_id = event.currentTarget.id.slice(17);

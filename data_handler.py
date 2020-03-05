@@ -21,9 +21,9 @@ def get_boards(cursor, logged_in):
     if logged_in:
         # return persistence.get_boards(force=True)
         cursor.execute(
-            sql.SQL("SELECT * FROM {boards} WHERE owner = (%s) ORDER BY id;")
+            sql.SQL("SELECT * FROM {boards} WHERE owner = (%s) OR owner=(%s) ORDER BY id;")
                 .format(
-                boards=sql.Identifier('boards')), [logged_in]
+                boards=sql.Identifier('boards')), [logged_in, 'public']
 
         )
     else:
@@ -110,10 +110,11 @@ def create_private_new_board(cursor, board_title, logged_in):
         VALUES ('{board_title}','{logged_in}');
 ''')
 
+    
 @persistence.connection_handler
 def archive_cards(cursor, card_id, option=True):
     cursor.execute(f'''
-    UPDATE cards SET archive = {option} WHERE id = {card_id}
+    UPDATE cards SET archive = {option} WHERE id = {card_id};
 ''')
 
 @persistence.connection_handler
@@ -235,4 +236,11 @@ def rename_card(cursor, card_id, new_title):
         UPDATE cards
         SET title = '{new_title}'
         WHERE id = {card_id};
+""")
+
+
+@persistence.connection_handler
+def delete_card(cursor, card_id):
+    cursor.execute(f"""
+        DELETE FROM cards WHERE id={card_id};
 """)
