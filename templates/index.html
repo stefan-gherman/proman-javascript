@@ -21,6 +21,10 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js' defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
     <script type="module" src="{{ url_for('static', filename='js/main.js')}}" defer></script>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+     <!-- ios support -->
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'images/icons/icon-96x96.png') }}">
+    <meta name="apple-mobile-web-app-status-bar" content="##8fa2b1">
 </head>
 <body>
 
