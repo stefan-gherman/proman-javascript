@@ -1,7 +1,7 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
 import { createAppendCard, handleNewCardClick, markCardsForClickRename, markCardsDeleteButton } from "./card_module.js";
-import { addEventClickBoardTitle, handleDeleteClick } from "./board_module.js"
+import { addEventClickBoardTitle, handleDeleteClick, expandedBoardsLocalList } from "./board_module.js"
 
 let triggered = false;
 let statusesDraggable = [];
@@ -86,6 +86,7 @@ export let dom = {
         button.addEventListener('click', async function (event) {
           let idForBoard = button.id.slice(6);
           console.log('idb', idForBoard);
+          expandedBoardsLocalList(idForBoard);
           let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
           response = await response.json();
           //console.log(response);

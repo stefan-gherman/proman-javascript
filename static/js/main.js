@@ -10,8 +10,8 @@ function init() {
     // loads the boards to the screen
     dom.loadBoards();
     // refreshes boards every n seconds
-    // setInterval(function() {
-    //     refreshBoards();}, 8000);
+    setInterval(function() {
+        refreshBoards();}, 8000);
 
 }
 
@@ -27,10 +27,32 @@ createLoginModal();
 renameModal();
 
 
-function refreshBoards() {
-    let boardsContainer = document.querySelector('#boards');
-    boardsContainer.innerHTML='';
-    dom.loadBoards();
+export function refreshBoards() {
+    let expandedBoardsList = localStorage.getItem('expandedBoards').split(',');
+    let expandedBoardsString = expandedBoardsList.join(',');
+    for (let board of expandedBoardsList) {
+        let expandButton;
+        try {
+            expandButton = document.getElementById(`collapseExample${board}`).getAttribute('class');
+            console.log(expandButton);
+            }
+        catch (err) {
+            console.log(err);
+        }
+        if (expandButton === 'collapse show') {
+            console.log('already collapsed');
+        } else if (expandButton === 'collapse'){
+            document.getElementById(`board_${board}`).click();
+        }
+
+        // .click();
+    }
+
+
+    localStorage.setItem('expandedBoards', expandedBoardsString);
+    // let boardsContainer = document.querySelector('#boards');
+    // boardsContainer.innerHTML='';
+    // dom.loadBoards();
 }
 
 let btnRefresh = document.getElementById('nav4');
