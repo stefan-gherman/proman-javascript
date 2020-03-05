@@ -113,7 +113,7 @@ def create_private_new_board(cursor, board_title, logged_in):
 @persistence.connection_handler
 def archive_cards(cursor, card_id, option=True):
     cursor.execute(f'''
-    UPDATE cards SET archive = {option} WHERE id = {card_id}
+    UPDATE cards SET archive = {option} WHERE id = {card_id};
 ''')
 
 
