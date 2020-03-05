@@ -51,7 +51,7 @@ def get_cards_for_status(status_id):
 def reorder_cards():
     req = request.get_json()
     print(req)
-    card_id = int(req['id'])
+    card_id = int(req['id'][10:])
     board_id = int(req['board_id'])
     status_id = int(req['status_id'])
     column_order = int(req['column_order'])
