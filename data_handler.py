@@ -65,7 +65,7 @@ def get_statuses_for_board(cursor, board_id):
 @persistence.connection_handler
 def get_cards_for_status(cursor, status_id):
     cursor.execute(
-        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = (%s) ORDER BY cards.column_order;')
+        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = (%s) AND cards.archive = False ORDER BY cards.column_order;')
             .format(
         ), [status_id]
     )
