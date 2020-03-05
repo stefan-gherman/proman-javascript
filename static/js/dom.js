@@ -331,7 +331,7 @@ function createAppend(element) {
 //       body: JSON.stringify(dataToSend)
 //=============================
     });
-  });
+
   title.addEventListener('keydown', function (event) {
     console.log(event.key);
     console.log(this.title);
