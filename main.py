@@ -95,7 +95,7 @@ def create_status():
     board_id = request.json['board_id']
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
-    return redirect("/")
+    return make_response("OK", 200)
 
 
 def main():
