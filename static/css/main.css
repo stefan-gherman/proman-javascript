@@ -2,6 +2,15 @@
 
 }
 
+.archive-button {
+    color: #cdcdcd;
+}
+
+.archive-button:hover {
+    color: black;
+    cursor: pointer;
+}
+
 .card-delete-button {
     color: #cdcdcd;
 }
