@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static';
+const staticCacheName = 'site-static-2';
 const assets= [
     "/bootstrap-4.3.1-dist/css/bootstrap.css",
     "/bootstrap-4.3.1-dist/js/bootstrap.js",
@@ -12,7 +12,7 @@ const assets= [
 self.addEventListener('install', function (event){
     event.waitUntil(caches.open(staticCacheName)
         .then( cache => {
-            console.log('caching');
+            console.log('caching'); //
             cache.addAll(assets);
         }));
 
@@ -21,7 +21,12 @@ self.addEventListener('install', function (event){
 
 //activate serviceWorker
 self.addEventListener('activate', function (event){
-    console.log('Service Worker has been activated');
+    // console.log('Service Worker has been activated');
+    event.waitUntil(
+        caches.keys().then(keys => {
+            console.log(keys)
+        })
+    )
 });
 
 

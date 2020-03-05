@@ -3,6 +3,7 @@ import { dataHandler } from "./data_handler.js";
 import { createAppendCard, handleNewCardClick, handleCardRenameKeyPressed, handleCardClickRename, handleCardRenameChange } from "./card_module.js";
 import { addEventClickBoardTitle, handleDeleteClick } from "./board_module.js"
 
+
 let triggered = false;
 let statusesDraggable = [];
 export let dom = {
@@ -20,7 +21,13 @@ export let dom = {
     
     
   },
-  
+
+  returnOfflineContent: async function() {
+
+
+
+  },
+
   showBoards: function (boards) {
     // shows boards appending them to #boards div
     // it adds necessary event listeners also

@@ -100,7 +100,7 @@ def create_status():
 
 
 def main():
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True)
 
     # Serving the favicon
     with app.app_context():
