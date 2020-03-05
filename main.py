@@ -51,7 +51,7 @@ def get_cards_for_status(status_id):
 def reorder_cards():
     req = request.get_json()
     print(req)
-    card_id = int(req['id'])
+    card_id = int(req['id'][10:])
     board_id = int(req['board_id'])
     status_id = int(req['status_id'])
     column_order = int(req['column_order'])
@@ -84,6 +84,11 @@ def create_private_new_board():
     data_handler.create_private_new_board(private_board_title, logged_in)
     return redirect(url_for('index'))
 
+@app.route('/api/view-archive/<board_id>')
+def view_archive(board_id):
+    data = data_handler.view_archive(board_id)
+    return jsonify(data)
+
 
 @app.route('/archive-card/<card_id>')
 def archive_cards(card_id):
@@ -91,12 +96,18 @@ def archive_cards(card_id):
     return redirect("/")
 
 
+@app.route('/api/undo-archive/<card_id>')
+def undo_archive(card_id):
+    data_handler.undo_archive(card_id)
+    return redirect('/')
+
+
 @app.route('/api/create-status', methods=['POST'])
 def create_status():
     board_id = request.json['board_id']
     status_title = request.json['status_title']
     data_handler.add_new_status(status_title, board_id)
-    return redirect("/")
+    return make_response("OK", 200)
 
 
 def main():
@@ -168,6 +179,17 @@ def rename_card(card_id):
     except:
         print('Card rename unsuccessful.')
         return make_response('Card rename unsuccessful.', 500)
+
+
+@app.route('/api/delete-card/<card_id>', methods=['POST'])
+def delete_card(card_id):
+    try:
+        card_id = request.json['cardId']
+        data_handler.delete_card(card_id)
+        return make_response('OK', 200)
+    except:
+        print('Card delete unsuccessful.')
+        return make_response('Card delete unsuccessful.', 500)
 
 
 @app.route('/api/board-first-status/<board_id>')

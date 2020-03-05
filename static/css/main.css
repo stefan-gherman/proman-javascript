@@ -1,3 +1,21 @@
 #boards {
 
 }
+
+.archive-button {
+    color: #cdcdcd;
+}
+
+.archive-button:hover {
+    color: black;
+    cursor: pointer;
+}
+
+.card-delete-button {
+    color: #cdcdcd;
+}
+
+.card-delete-button:hover {
+    color: black;
+    cursor: pointer;
+}
