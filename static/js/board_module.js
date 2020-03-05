@@ -54,3 +54,24 @@ export function handleDeleteClick(event) {
 
     fetch('http://127.0.0.1:5000/api/delete-board', option).then(location.reload())
 }
+
+
+export function expandedBoardsLocalList(board_id) {
+    // localStorage.clear();
+    if (localStorage.getItem('expandedBoards') === false || localStorage.getItem('expandedBoards') === null) {
+        localStorage.setItem('expandedBoards', 'placeholder,');
+    }
+    let expandedBoardsString = localStorage.getItem('expandedBoards');
+    console.log('the string', expandedBoardsString);
+    let expandedBoardsList = expandedBoardsString.split(",");
+    if (expandedBoardsList.includes(board_id) === false) {
+        localStorage.setItem('expandedBoards', expandedBoardsList.join(',') + `${board_id},`);
+    }
+    else if (expandedBoardsList.includes(board_id) === true){
+        let alreadyExpandedBoardIndex = expandedBoardsList.indexOf(`${board_id}`);
+        console.log('list index to remove', alreadyExpandedBoardIndex);
+        expandedBoardsList.splice(alreadyExpandedBoardIndex, 1);
+        console.log('list after splice', expandedBoardsList);
+        localStorage.setItem('expandedBoards', expandedBoardsList.join(','));
+    }
+}

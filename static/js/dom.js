@@ -1,8 +1,9 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
 import { createAppendCard, handleNewCardClick, handleCardRenameKeyPressed, handleCardClickRename, handleCardRenameChange } from "./card_module.js";
-import { addEventClickBoardTitle, handleDeleteClick } from "./board_module.js"
+import { addEventClickBoardTitle, handleDeleteClick, expandedBoardsLocalList } from "./board_module.js"
 import { handleNewStatusClick } from "./status_module.js"
+
 
 let triggered = false;
 let statusesDraggable = [];
@@ -87,13 +88,14 @@ export let dom = {
         button.addEventListener('click', async function (event) {
           let idForBoard = button.id.slice(6);
           console.log('idb', idForBoard);
+          expandedBoardsLocalList(idForBoard);
           let response = await fetch(`${window.origin}/get-statuses/${idForBoard}`);
           response = await response.json();
           //console.log(response);
           console.log('Pop Boards');
           let boardBody = document.getElementById(`${idForBoard}`);
           boardBody.innerHTML = '';
-          
+
           for (let element of response) {
             console.log('Populating with the', element);
             createAppend(element);
@@ -107,7 +109,8 @@ export let dom = {
               createAppendCard(card);
             }
             insertObjectInArray(columnBody, statusesDraggable);
-            markCardsForClickRename()
+            markCardsForClickRename();
+            markCardsDeleteButton();
           }
           console.log(statusesDraggable);
           let drake = dragula(statusesDraggable).on('drop', function (el, target, source, sibling) {
@@ -253,7 +256,6 @@ function createAppend(element) {
 }
 
 
-
 const insertObjectInArray = (elem, arr) => {
   let search = 0;
   let pos;
@@ -277,18 +279,3 @@ const insertObjectInArray = (elem, arr) => {
 
 
 
-
-
-
-
-function markCardsForClickRename() {
-    let allCards = document.getElementsByClassName("col-md");
-    console.log('cards= ', allCards);
-    for (let card of allCards) {
-        if (card.id.includes('card_')) {
-            card.addEventListener('click', handleCardClickRename);
-            card.addEventListener('keydown', handleCardRenameKeyPressed);
-            card.addEventListener('change', handleCardRenameChange)
-        }
-    }
-}

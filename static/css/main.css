@@ -1,3 +1,12 @@
 #boards {
 
 }
+
+.card-delete-button {
+    color: #cdcdcd;
+}
+
+.card-delete-button:hover {
+    color: black;
+    cursor: pointer;
+}
