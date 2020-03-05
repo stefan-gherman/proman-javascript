@@ -100,7 +100,7 @@ def create_status():
 
 
 def main():
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
 
     # Serving the favicon
     with app.app_context():
@@ -213,6 +213,30 @@ def update_status_title():
 @app.route('/sw.js', methods=['GET'])
 def sw():
     return app.send_static_file('sw.js')
+
+
+@app.route('/bootstrap-4.3.1-dist/css/bootstrap.css', methods=['GET'])
+def return_bootstrap_css():
+    return app.send_static_file('bootstrap-4.3.1-dist/css/bootstrap.css')
+
+
+@app.route('/bootstrap-4.3.1-dist/js/bootstrap.js', methods=['GET'])
+def return_bootstrap_js():
+    return app.send_static_file('bootstrap-4.3.1-dist/js/bootstrap.js')
+
+
+@app.route('/js/main.js', methods=['GET'])
+def return_main_js():
+    return app.send_static_file('js/main.js')
+
+
+@app.route('/js/dom.js', methods=['GET'])
+def return_dom_js():
+    return app.send_static_file('js/dom.js')
+
+@app.route('/offline_page', methods=['GET'])
+def return_offline_page():
+    return app.send_static_file('offline_page.html')
 
 
 if __name__ == '__main__':
