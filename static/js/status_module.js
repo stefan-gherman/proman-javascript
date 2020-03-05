@@ -14,6 +14,8 @@ export function handleNewStatusClick(event) {
         body: JSON.stringify(data)
       };
       fetch('http://127.0.0.1:5000/api/create-status', options);
+      // event.target.textContent = '';
+      // document.getElementById(`buttonNewStatusForBoard${board_id}`).click();
     });
   }
 }
