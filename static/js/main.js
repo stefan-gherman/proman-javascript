@@ -58,9 +58,9 @@ export function refreshBoards() {
 
 let btnRefresh = document.getElementById('nav4');
 btnRefresh.addEventListener('click', function(){
-    let boardsContainer = document.querySelector('#boards');
-    boardsContainer.innerHTML='';
-    dom.loadBoards();
+    // let boardsContainer = document.querySelector('#boards');
+    // boardsContainer.innerHTML='';
+    // dom.loadBoards();
     refreshBoards();
 });
 
