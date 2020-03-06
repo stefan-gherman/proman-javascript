@@ -166,6 +166,7 @@ function createAppend(element) {
     console.log(title.title);
     title.addEventListener('focus', function(event){
         title.setAttribute('style', 'cursor:pointer; padding-left: 10px; padding-right:10px;  outline-color: #9ecaed; box-shadow: 0 0 8px #9ecaed')
+        localStorage.setItem('liveSync', 'off')
     });
     title.addEventListener('focusout', function (event) {
         console.log(title.innerText);
@@ -192,6 +193,7 @@ function createAppend(element) {
         });
         title.blur();
          title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
+        localStorage.setItem('liveSync', 'on')
     });
     title.addEventListener('keydown', function(event){
         console.log(event.key);
@@ -201,8 +203,10 @@ function createAppend(element) {
             title.innerHTML = title.title;
             title.blur();
             title.setAttribute('style', 'cursor:pointer; padding-left: 1px; padding-right:1px;  outline-color: #9ecaed')
+            localStorage.setItem('liveSync', 'on');
         } else if (event.key === 'Enter'){
              console.log(title.innerText);
+             localStorage.setItem('liveSync', 'on');
              title.innerText = title.innerText.trim();
              if (title.innerText.trim() === ''){
                  title.innerText=title.title
