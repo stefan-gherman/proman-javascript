@@ -65,7 +65,7 @@ def get_statuses_for_board(cursor, board_id):
 @persistence.connection_handler
 def get_cards_for_status(cursor, status_id):
     cursor.execute(
-        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = (%s) ORDER BY cards.column_order;')
+        sql.SQL('SELECT cards.* from cards WHERE cards.status_id = (%s) AND cards.archive = False ORDER BY cards.column_order;')
             .format(
         ), [status_id]
     )
@@ -110,12 +110,13 @@ def create_private_new_board(cursor, board_title, logged_in):
         VALUES ('{board_title}','{logged_in}');
 ''')
 
-    
+
 @persistence.connection_handler
 def archive_cards(cursor, card_id, option=True):
     cursor.execute(f'''
     UPDATE cards SET archive = {option} WHERE id = {card_id};
 ''')
+
 
 @persistence.connection_handler
 def view_archive(cursor, board_id):
@@ -124,6 +125,7 @@ def view_archive(cursor, board_id):
 ''')
     result = cursor.fetchall()
     return result
+
 
 @persistence.connection_handler
 def undo_archive(cursor, card_id, option=False):
@@ -243,3 +245,44 @@ def delete_card(cursor, card_id):
     cursor.execute(f"""
         DELETE FROM cards WHERE id={card_id};
 """)
+
+
+@persistence.connection_handler
+def return_all_boards_for_offline(cursor):
+    public = 'public'
+    cursor.execute(
+        sql.SQL('SELECT {id}, {title} FROM {boards} WHERE {owner} = (%s) ORDER BY id;').format(
+            id=sql.Identifier('id'),
+            title=sql.Identifier('title'),
+            boards=sql.Identifier('boards'),
+            owner=sql.Identifier('owner')
+        ), [public]
+    )
+
+    query_result = cursor.fetchall()
+
+    if len(query_result) == 0:
+        return False
+    return query_result
+
+
+@persistence.connection_handler
+def return_all_statuses_and_cards(cursor):
+    cursor.execute(
+        sql.SQL(
+            'SELECT {statuses}.{id}, {statuses}.{title}, {statuses}.{board_id}, array_agg({cards}.{title}) FROM {statuses} LEFT JOIN {cards} on {statuses}.{id} = {cards}.{status_id} GROUP BY {statuses}.{id}, {statuses}.{title}, {statuses}.{board_id} ORDER BY {statuses}.{id};').format(
+            statuses=sql.Identifier('statuses'),
+            id=sql.Identifier('id'),
+            title=sql.Identifier('title'),
+            board_id=sql.Identifier('board_id'),
+            cards=sql.Identifier('cards'),
+            status_id=sql.Identifier('status_id'),
+
+        )
+    )
+
+    query_result = cursor.fetchall()
+
+    if len(query_result) == 0:
+        return False
+    return query_result

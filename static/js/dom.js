@@ -5,39 +5,51 @@ import { addEventClickBoardTitle, handleDeleteClick, expandedBoardsLocalList, ha
 import { handleNewStatusClick } from "./status_module.js"
 
 
-
 let triggered = false;
 // let statusesDraggable = [];
 export let dom = {
-  init: function () {
-    // This function should run once, when the page is loaded.
-  },
-  loadBoards: function () {
-    // retrieves boards and makes showBoards called
-    dataHandler.getBoards(function (boards) {
-      dom.showBoards(boards);
-      
-    });
-    
-    // const boardExpandButton = document.getElementById('')\
-    
-    
-  },
+    init: function () {
+        // This function should run once, when the page is loaded.
+    },
+    loadBoards: function () {
+        // retrieves boards and makes showBoards called
+        dataHandler.getBoards(function (boards) {
+            dom.showBoards(boards);
 
-  returnOfflineContent: async function() {
+        });
+
+        // const boardExpandButton = document.getElementById('')\
 
 
+    },
 
-  },
+    returnOfflineContent: async function () {
 
-  showBoards: function (boards) {
-    // shows boards appending them to #boards div
-    // it adds necessary event listeners also
-    
-    let boardList = '';
-    
-    for (let board of boards) {
-      boardList += `
+
+        let boards = await fetch(`${window.origin}/return-offline-boards`);
+        boards = await boards.json();
+
+        let statusesCards = await fetch(`${window.origin}/return-offline-cards`);
+        statusesCards = await statusesCards.json();
+
+
+        let date = new Date();
+        localStorage.offlineBoards = JSON.stringify(boards);
+        localStorage.statusesBoards = JSON.stringify(statusesCards);
+        localStorage.date = `${date.toString().slice(0,24)}`
+
+
+
+    },
+
+    showBoards: function (boards) {
+        // shows boards appending them to #boards div
+        // it adds necessary event listeners also
+
+        let boardList = '';
+
+        for (let board of boards) {
+            boardList += `
                <div>
                     <p>
                         <div class="navbar navbar-light bg-light rounded border">
@@ -86,9 +98,9 @@ export let dom = {
                      </div>
                 </div>
         `;
-    }
-    
-    const outerHtml = `
+        }
+
+        const outerHtml = `
             <ul class="container">
                 ${boardList}
             </ul>
@@ -126,41 +138,42 @@ export let dom = {
 
 
 function handleViewArchive(event) {
-  let board_id = event.currentTarget.id.slice(17);
-  
-  fetch(`http://127.0.0.1:5000/api/view-archive/${board_id}`)
-    .then(response => response.json())
-    .then(function (data) {
-      // console.log('data ', data);
-      let cardContainer = document.getElementById(`Archive${board_id}`);
-      cardContainer.innerHTML = '';
-      
-      for (let card of data) {
-        
-        let container = document.createElement('div');
-        container.setAttribute('id', `container_card_${card.id}`);
-        
-        let tempCard = document.createElement("span");
-        tempCard.setAttribute('class', 'col-md');
-        tempCard.setAttribute('style', 'border: 2px solid black; margin: 6px; cursor: pointer;');
-        tempCard.setAttribute('id', `card_${card.id}`);
-        tempCard.innerHTML = card.title;
-        container.appendChild(tempCard);
-        
-        let unarchiveButton = document.createElement("span");
-        unarchiveButton.setAttribute('class', 'archive-button');
-        unarchiveButton.setAttribute('id', `undoArchiveButton_${card.id}`);
-        unarchiveButton.innerText = 'unArchive';
-        container.appendChild(unarchiveButton);
-        
-        cardContainer.appendChild(container);
-        
-        unarchiveButton.addEventListener('click', undoArchive);
-      }
-    })
+    let board_id = event.currentTarget.id.slice(17);
+
+    fetch(`http://127.0.0.1:5000/api/view-archive/${board_id}`)
+        .then(response => response.json())
+        .then(function (data) {
+            // console.log('data ', data);
+            let cardContainer = document.getElementById(`Archive${board_id}`);
+            cardContainer.innerHTML = '';
+
+            for (let card of data) {
+
+                let container = document.createElement('div');
+                container.setAttribute('id', `container_card_${card.id}`);
+
+                let tempCard = document.createElement("span");
+                tempCard.setAttribute('class', 'col-md');
+                tempCard.setAttribute('style', 'border: 2px solid black; margin: 6px; cursor: pointer;');
+                tempCard.setAttribute('id', `card_${card.id}`);
+                tempCard.innerHTML = card.title;
+                container.appendChild(tempCard);
+
+                let unarchiveButton = document.createElement("span");
+                unarchiveButton.setAttribute('class', 'archive-button');
+                unarchiveButton.setAttribute('id', `undoArchiveButton_${card.id}`);
+                unarchiveButton.innerText = 'unArchive';
+                container.appendChild(unarchiveButton);
+
+                cardContainer.appendChild(container);
+
+                unarchiveButton.addEventListener('click', undoArchive);
+            }
+        })
 }
 
 function undoArchive(event) {
+
   let card_id = event.target.id.slice(18);
   
   fetch(`http://127.0.0.1:5000/api/undo-archive/${card_id}`).then(location.reload())

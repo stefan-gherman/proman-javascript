@@ -10,10 +10,11 @@ if ('serviceWorker' in navigator) {
     }
 
 // This function is to initialize the application
-function init() {
+async function init() {
     // init data
     dom.init();
     // loads the boards to the screen
+    await dom.returnOfflineContent();
     dom.loadBoards();
     // refreshes boards every n seconds
     setInterval(function() {
@@ -23,6 +24,9 @@ function init() {
         boardsContainer.innerHTML='';
         dom.loadBoards();
         refreshBoards();}, 30000);
+    setInterval(function(){
+        dom.returnOfflineContent();
+    }, 600000);
 
 }
 
