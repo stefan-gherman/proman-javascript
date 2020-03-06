@@ -14,7 +14,8 @@ const populatePage = () => {
     const brAdder = document.createElement('br');
     disclaimer.appendChild(brAdder);
     disclaimer.innerText += `In case you are online and you are seeing this page, the server might be down. You can contact support at: 0800-88392-776`;
-
+     disclaimer.appendChild(brAdder);
+    disclaimer.innerText += `PS: To get more accurate data refresh the page often, as the backup is created on each page reload and after 10 minutes when not reloading.`;
     const boardsContainer = document.getElementById('boardsHolder');
     let boards = JSON.parse(localStorage.offlineBoards);
     let cards = JSON.parse(localStorage.statusesBoards);

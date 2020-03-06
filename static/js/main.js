@@ -18,7 +18,9 @@ async function init() {
     // refreshes boards every n seconds
     setInterval(function() {
         refreshBoards();}, 8000);
-
+    setInterval(function(){
+        dom.returnOfflineContent();
+    }, 600000);
 }
 
 
