@@ -17,8 +17,14 @@ async function init() {
     await dom.returnOfflineContent();
     dom.loadBoards();
     // refreshes boards every n seconds
+
     setInterval(function() {
-        refreshBoards();}, 8000);
+        let refreshPermission = localStorage.getItem('liveSync');
+        if (refreshPermission === 'on') {
+            refreshBoards();
+        }
+    }, 8000);
+
     setInterval(function() {
         let boardsContainer = document.querySelector('#boards');
         boardsContainer.innerHTML='';

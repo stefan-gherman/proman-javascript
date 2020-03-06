@@ -31,13 +31,16 @@ function handleBoardTitleOnKeyPress(event) {
             body: JSON.stringify(data)
         };
         fetch(`http://127.0.0.1:5000/api/rename-board-title/${boardId}`, options);
+        localStorage.setItem('liveSync', 'on');
     } else if (event.which == 27 || event.keyCode == 27) {
         event.currentTarget.innerHTML = event.target.defaultValue;
+        localStorage.setItem('liveSync', 'on');
     }
 }
 
 
 function handleBoardTitle(event) {
+    localStorage.setItem('liveSync', 'off');
     event.target.innerHTML = `
     <input type="text" class="form-control" id="board-rename-input" 
     value="${event.target.textContent.trim()}">`

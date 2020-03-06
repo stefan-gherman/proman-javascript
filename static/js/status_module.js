@@ -1,6 +1,7 @@
 import { refreshBoards } from "./main.js"
 
 export function handleNewStatusClick(event) {
+  localStorage.setItem('liveSync', 'off');
   let board_id = event.target.id.slice(23);
   let inputsColumnName = document.querySelectorAll("input");
   for (let input of inputsColumnName) {
@@ -17,6 +18,7 @@ export function handleNewStatusClick(event) {
       };
       await fetch('http://127.0.0.1:5000/api/create-status', options);
       await refreshBoards();
+      localStorage.setItem('liveSync', 'on');
       // event.target.value = '';
       // document.getElementById(`buttonNewStatusForBoard${board_id}`).click();
     });
