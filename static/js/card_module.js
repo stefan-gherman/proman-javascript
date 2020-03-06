@@ -125,13 +125,16 @@ export function handleCardRenameKeyPressed(event) {
       body: JSON.stringify(data)
     };
     fetch(`http://127.0.0.1:5000/api/rename-card/${cardId}`, options);
+    localStorage.setItem('liveSync', 'on');
   } else if (event.which == 27 || event.keyCode == 27) {
     event.currentTarget.innerHTML = event.target.defaultValue;
+    localStorage.setItem('liveSync', 'on');
   }
 }
 
 
 export function handleCardClickRename(event) {
+    localStorage.setItem('liveSync', 'off');
   console.log('entered card click rename');
   console.log('click rename event:', event.toElement.innerHTML);
   event.toElement.innerHTML = `
@@ -141,6 +144,7 @@ export function handleCardClickRename(event) {
 
 export function handleCardRenameChange(event) {
   event.currentTarget.innerHTML = event.target.defaultValue;
+  localStorage.setItem('liveSync', 'on');
 }
 
 
