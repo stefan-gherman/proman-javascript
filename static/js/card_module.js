@@ -1,3 +1,5 @@
+import {refreshBoards} from "./main.js";
+
 export function createAppendCard(element) {
   let columnBody = document.getElementById(`column_tr_${element.status_id}`);
   if (columnBody) {
@@ -41,62 +43,64 @@ export function createAppendCard(element) {
 
 
 export function handleNewCardClick(event) {
-  let board_id = event.target.id.slice(21);
-  let card_title = 'New Card';
-  let data = {board_id, card_title};
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  };
-  fetch('http://127.0.0.1:5000/api/create-card', options);
-  // Artificial temporary visual update, must change before card edit
-  fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
-    .then(response => response.json())
-    .then(function (data) {
-      console.log('data ', data);
-      let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
+    let board_id = event.target.id.slice(21);
+    let card_title = 'New Card';
+    let data = {board_id, card_title};
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    fetch('http://127.0.0.1:5000/api/create-card', options);
+    // Artificial temporary visual update, must change before card edit
+    fetch(`http://127.0.0.1:5000/api/board-first-status/${board_id}`)
+        .then(response => response.json())
+        .then(function(data) {
+        console.log('data ', data);
+        let tempColumn = document.getElementById(`column_tr_${data.first_status_id}`);
+
+        let cardBodyContainer = document.createElement('div');
+        cardBodyContainer.setAttribute('id', `container_card_${data.last_card_id + 1}`);
+        cardBodyContainer.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+        cardBodyContainer.setAttribute('data-board', `${board_id}`);
+        cardBodyContainer.setAttribute('data-order', `${data.last_card_order}`);
+        tempColumn.appendChild(cardBodyContainer);
+
+
+        let tempCard = document.createElement('span');
+        tempCard.setAttribute('class', 'col-md');
+        tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
+        tempCard.setAttribute('id', `card_${data.last_card_id + 1}`);
+        // tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
+        // tempCard.setAttribute('data-board', `${board_id}`);
+        // tempCard.setAttribute('data-order', `${data.last_card_order}`);
+        tempCard.innerText += `${card_title}`;
+        cardBodyContainer.appendChild(tempCard);
       
-      let cardBodyContainer = document.createElement('div');
-      cardBodyContainer.setAttribute('id', `container_card_${data.last_card_id + 1}`);
-      cardBodyContainer.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-      cardBodyContainer.setAttribute('data-board', `${board_id}`);
-      cardBodyContainer.setAttribute('data-order', `${data.last_card_order}`);
-      tempColumn.appendChild(cardBodyContainer);
+
+        let archiveCardButton = document.createElement('span');
+        archiveCardButton.setAttribute('class', 'archive-button');
+        archiveCardButton.setAttribute('id', `archive_card_${data.last_card_id}`);
+        archiveCardButton.setAttribute('title', `Archive ${card_title}`);
+        archiveCardButton.innerText = 'a ';
+        cardBodyContainer.appendChild(archiveCardButton);
+
+        archiveCardButton.addEventListener('click', archiveCard);
+
       
-      
-      let tempCard = document.createElement('span');
-      tempCard.setAttribute('class', 'col-md');
-      tempCard.setAttribute('style', ' border: 2px solid black; margin: 6px; cursor: pointer;');
-      tempCard.setAttribute('id', `card_${data.last_card_id + 1}`);
-      // tempCard.setAttribute('data-card', `column_tr_${data.first_status_id}`);
-      // tempCard.setAttribute('data-board', `${board_id}`);
-      // tempCard.setAttribute('data-order', `${data.last_card_order}`);
-      tempCard.innerText += `${card_title}`;
-      cardBodyContainer.appendChild(tempCard);
-      
-      let archiveCardButton = document.createElement('span');
-      archiveCardButton.setAttribute('class', 'archive-button');
-      archiveCardButton.setAttribute('id', `archive_card_${data.last_card_id}`);
-      archiveCardButton.setAttribute('title', `Archive ${card_title}`);
-      archiveCardButton.innerText = 'A ';
-      cardBodyContainer.appendChild(archiveCardButton);
-      
-      archiveCardButton.addEventListener('click', archiveCard);
-      
-      let deleteCardButton = document.createElement('span');
-      deleteCardButton.setAttribute('class', 'card-delete-button')
-      deleteCardButton.setAttribute('id', `delete_card_${data.last_card_id}`);
-      deleteCardButton.setAttribute('title', `Delete ${card_title}`)
-      deleteCardButton.innerText = 'x';
-      cardBodyContainer.appendChild(deleteCardButton);
-      
-      markCardsForClickRename();
-      markCardsDeleteButton();
+        let deleteCardButton = document.createElement('span');
+        deleteCardButton.setAttribute('class', 'card-delete-button')
+        deleteCardButton.setAttribute('id', `delete_card_${data.last_card_id}`);
+        deleteCardButton.setAttribute('title', `Delete ${card_title}`)
+        deleteCardButton.innerText = 'x';
+        cardBodyContainer.appendChild(deleteCardButton);
+
+        markCardsForClickRename();
+        markCardsDeleteButton();
+        refreshBoards();
     });
-  
 }
 
 
@@ -177,9 +181,8 @@ function handleDeleteCardClick(event) {
   
 }
 
+
 function archiveCard(event) {
   let card_id = event.target.id.slice(13);
-  
   fetch(`/archive-card/${card_id}`).then(location.reload())
-  
 }
