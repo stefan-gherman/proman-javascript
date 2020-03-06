@@ -84,6 +84,7 @@ def create_private_new_board():
     data_handler.create_private_new_board(private_board_title, logged_in)
     return redirect(url_for('index'))
 
+
 @app.route('/api/view-archive/<board_id>')
 def view_archive(board_id):
     data = data_handler.view_archive(board_id)
@@ -256,9 +257,35 @@ def return_main_js():
 def return_dom_js():
     return app.send_static_file('js/dom.js')
 
+
 @app.route('/offline_page', methods=['GET'])
 def return_offline_page():
     return app.send_static_file('offline_page.html')
+
+
+@app.route('/js/offlineScript.js', methods=['GET'])
+def return_offline_script():
+    return app.send_static_file('js/offlineScript.js')
+
+
+@app.route('/return-offline-boards')
+def return_offline_boards():
+    boards = data_handler.return_all_boards_for_offline()
+
+    if boards is False:
+        failed_status = {'status': 'failed'}
+        return make_response(jsonify(failed_status), 200)
+    return make_response(jsonify(boards), 200)
+
+
+@app.route('/return-offline-cards')
+def return_offline_cards():
+    cards = data_handler.return_all_statuses_and_cards()
+
+    if cards is False:
+        failed_status = {'status': 'failed'}
+        return make_response(jsonify(failed_status), 200)
+    return make_response(jsonify(cards), 200)
 
 
 if __name__ == '__main__':
