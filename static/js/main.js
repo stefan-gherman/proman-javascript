@@ -23,7 +23,7 @@ async function init() {
         let boardsContainer = document.querySelector('#boards');
         boardsContainer.innerHTML='';
         dom.loadBoards();
-        refreshBoards();}, 30000);
+        refreshBoards();}, 600000);
     setInterval(function(){
         dom.returnOfflineContent();
     }, 600000);
