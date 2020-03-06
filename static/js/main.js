@@ -9,15 +9,18 @@ import {createRegisterModal, createLoginModal, renameModal} from "./login_modals
     }
 
 // This function is to initialize the application
-function init() {
+async function init() {
     // init data
     dom.init();
     // loads the boards to the screen
+    await dom.returnOfflineContent();
     dom.loadBoards();
     // refreshes boards every n seconds
     setInterval(function() {
         refreshBoards();}, 8000);
-
+    setInterval(function(){
+        dom.returnOfflineContent();
+    }, 600000);
 }
 
 

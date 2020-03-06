@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static-2';
+const staticCacheName = 'site-static-offline';
 const assets= [
     "/bootstrap-4.3.1-dist/css/bootstrap.css",
     "/bootstrap-4.3.1-dist/js/bootstrap.js",
@@ -6,7 +6,8 @@ const assets= [
     "/js/dom.js",
     "https://code.jquery.com/jquery-3.4.1.min.js",
     "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
-    "/offline_page"
+    "/offline_page",
+    "/js/offlineScript.js"
 ];
 
 self.addEventListener('install', function (event){
@@ -18,7 +19,7 @@ self.addEventListener('install', function (event){
 
 
 });
-
+////
 //activate serviceWorker
 self.addEventListener('activate', function (event){
     // console.log('Service Worker has been activated');
