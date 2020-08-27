@@ -1,3 +1,14 @@
 # Proman
 
-It is not mandatory but feel free to use the skeleton code which you find in this repo. Also, we provided some design materials, like an example layout; if you like, you can freely use it.
+## Description
+Poman is a Treelo-like web application where users can manage their project in an AGILE manner
+
+## Key Features
+- Web app that can be used to manage projects
+- Tasks can be moved around different sections
+- User Register and Login
+- Persistent Storage via PostgreSQL Database
+- Available as an offline app
+- PWA (Progressive Web App) able to be installed on mobile and other device
+
+
